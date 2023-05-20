@@ -1,4 +1,15 @@
 import { Box, Button, Card, CardActions, CardContent, Tooltip, Typography } from "@mui/material";
+
+/* import { Document, Page } from 'react-pdf';
+
+function MyComponent({ pdfBlob }) {
+  return (
+    <Document file={pdfBlob}>
+      <Page pageNumber={1} />
+    </Document>
+  );
+} */
+
 const bull = (
   <Box
     component="span"
