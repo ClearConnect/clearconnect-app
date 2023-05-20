@@ -1,15 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+//import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Auth0Provider } from "@auth0/auth0-react";
+import store from './app/store'
+import { Provider } from 'react-redux'
+
+import { darkTheme, lightTheme } from './theme/Theme';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import { ToggleColorMode } from './app/ColorToggle';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
+  
   <React.StrictMode>
-    <App />
+   <ToggleColorMode  child={
+    <Provider store={store}>
+      <Auth0Provider
+        domain="dev-1tkiivqacmubkas5.us.auth0.com"
+        clientId="gZxAQIU9dXOMozZwikrSHAw7LAivYq34"
+        authorizationParams={{
+          redirect_uri: window.location.origin
+        }}
+      >
+        <ToggleColorMode  child={<App />} />
+        
+      </Auth0Provider>
+    </Provider>
+   } />
+    
   </React.StrictMode>
 );
 
