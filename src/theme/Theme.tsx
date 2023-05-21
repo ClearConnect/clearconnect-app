@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { Typography, Button, Grid, Paper } from '@mui/material';
+import { Typography, Button, Grid, Paper, Box } from '@mui/material';
 //import { Box } from '@mui/system';
 import { LoginButton } from '../features/auth/login';
 //import { selectStatus } from '../features/auth/AccessTokenSlice';
@@ -44,6 +44,14 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ message }) => {
 }
 
 
+export const MessageOnEmptyScreen: React.FC<{ message:string}> = ({message}) => {
+  return (<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+    <Typography variant="h4" component="h1">
+      {message}
+    </Typography>
+  </Box>
+  )
+}
 
 const MessageGridItem: React.FC<MessageProps> = ({ auth0Status }) => {
   const { /* isAuthenticated, */ isLoading: isAuth0Loading } = useAuth0();
@@ -56,7 +64,7 @@ const MessageGridItem: React.FC<MessageProps> = ({ auth0Status }) => {
 
       </Grid>)
     case 'idle':
-      return ( isAuth0Loading? <></>: <> <Grid item>
+      return (isAuth0Loading ? <></> : <> <Grid item>
         <Typography variant="h6" component="h2">
           To begin...
         </Typography>
@@ -84,6 +92,7 @@ const MessageGridItem: React.FC<MessageProps> = ({ auth0Status }) => {
 }
 export const WelcomeGrid: React.FC = () => {
   const tokenStatus = useAppSelector(state => state.tokens.status)
+  const userIdFromAuth0Metadata: number | undefined = useAppSelector(state => state.tokens.auth0UserMetaData === undefined ? undefined : +state.tokens.auth0UserMetaData)
   return (
     <Grid container style={{ height: '100vh', width: '100vw' }}>
       <Grid item xs={12} style={{ height: '100vh', width: '100vw' }}>
