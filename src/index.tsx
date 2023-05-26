@@ -24,7 +24,9 @@ root.render(
         domain="dev-1tkiivqacmubkas5.us.auth0.com"
         clientId="gZxAQIU9dXOMozZwikrSHAw7LAivYq34"
         authorizationParams={{
-          redirect_uri: window.location.origin
+          redirect_uri: window.location.origin,
+          audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
+      scope: "read:current_user read:users read:users_app_metadata"     
         }}
       >
         <ToggleColorMode  child={<App />} />
