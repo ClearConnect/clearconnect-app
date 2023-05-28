@@ -45,7 +45,7 @@ const ReqCardGrid: React.FC<ReqCardGridProps> = (cntId) => {
       {boxContent}
     </Typography>
   </Box> :
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       {gridItems}
     </Grid>
     )

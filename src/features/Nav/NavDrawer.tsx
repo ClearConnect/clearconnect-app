@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Avatar, Drawer, IconButton, List, ListItem, ListItemText } from "@mui/material";
+import { Avatar, Drawer, IconButton, List, ListItem, ListItemText,ListItemButton } from "@mui/material";
 //import { MenuIcon } from '@mui/icons-material/Menu'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { LogoutButton, LoginButton } from "../../features/auth/login"
@@ -20,14 +20,19 @@ interface NavDrawerProps {
     items: string[];
     isOpen: boolean;
     onClose: () => void;
+    onClick: React.MouseEventHandler<HTMLAnchorElement> ;
 }
 
+  
+  
 
-const NavDrawer: React.FC<NavDrawerProps> = ({ items, isOpen, onClose }) => {
+
+const NavDrawer: React.FC<NavDrawerProps> = ({ items, isOpen, onClose, onClick }) => {
+    const [selectedOption, setSelectedOption] = useState<string>('');
+
     const { user, isAuthenticated, isLoading } = useAuth0();
     return (
         <div>
-
             <Drawer anchor="left" open={isOpen} onClose={onClose} sx={{
                 position: 'absolute',
                 top: '15px',
@@ -38,13 +43,13 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ items, isOpen, onClose }) => {
                 <div style={{ width: 250 }}>
                     <List>
                         {isAuthenticated ? items.map((item, index) => (
-                            <ListItem button key={index} onClick={onClose}>
+                            <ListItemButton  href="/" key={index} onClick = {onClick}>
                                 <ListItemText primary={item} />
-                            </ListItem>
+                            </ListItemButton>
                         )) : ''}
-                        <ListItem button key={10000} onClick={onClose}>
+                        <ListItemButton key={10000} onClick={onClose}>
                             {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-                        </ListItem>
+                        </ListItemButton>
                     </List>
                 </div>
             </Drawer>

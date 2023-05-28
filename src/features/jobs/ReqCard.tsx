@@ -43,7 +43,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   const kuku = ReqCardData.jrId
   const jrPosDescription = ReqCardData.jrPosDescription
   return (
-    <Card >
+    <Card sx={{ borderRadius: 5 }}>
       <CardContent>
       <Tooltip title= {title} arrow>
         <Typography variant="h5" component="div" noWrap>

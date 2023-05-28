@@ -1,7 +1,7 @@
 // Import the RTK Query methods from the React-specific entry point
 import { createApi, BaseQueryFn, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { RootState } from '../../app/store';
-
+import {  ReqData } from '../jobs/ReqInterfaces';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: 'https://localhost:7165',
@@ -15,12 +15,6 @@ const baseQuery = fetchBaseQuery({
   }
 });
 
-
-interface Post {
-  id: number
-  name: string
-  jrId: number
-}
 
 // Define our single API slice object
 export const apiSlice = createApi({
@@ -47,19 +41,16 @@ export const apiSlice = createApi({
       query: (contactId: number) => {
         return `/Req/GetContactReqs/${contactId}`
       },
-     /*  transformResponse: (rawResult:  [any] , meta) => {
-        //                                                        ^
-        // The optional `meta` property is available based on the type for the `baseQuery` used
-
-        // The return value for `transformResponse` must match `ResultType`
-        const Req1 = rawResult[0];
-        const kuku = Req1.jrId
-        const kuku1 = Req1.jrPositionTitle
-        return rawResult
-      }, */
-    })
+    }),
+    AddJob: builder.mutation< ReqData, Pick<  ReqData, 'JrPosDescription'> & Partial<ReqData>  >({
+      query: ( reqData) => ({
+        url: `/PostReq`,
+        method: 'POST',
+        body: reqData,
+      }),
+  })
   })
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetJobsForContactQuery, useGetContactInfoQuery } = apiSlice
+export const { useGetJobsForContactQuery, useGetContactInfoQuery,  useAddJobMutation } = apiSlice

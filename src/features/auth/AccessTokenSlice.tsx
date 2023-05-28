@@ -47,10 +47,10 @@ async function GetUserMetadata(authobject: Auth0ContextInterface): Promise<{ use
   });
 }
 
-async function GetClearConnectToken(authobject: Auth0ContextInterface): Promise<string> {
+async function GetClearConnectToken(auth0object: Auth0ContextInterface): Promise<string> {
   let accessTokenclearconnect_API: string
   return new Promise((resolve, reject) => {
-    authobject.getAccessTokenSilently({
+    auth0object.getAccessTokenSilently({
       authorizationParams: {
         redirect_uri: window.location.origin,
         audience: `https://clearconnect_API`,
@@ -78,7 +78,9 @@ export const getAuth0APIAccessToken = createAsyncThunk<auth0PayloadInterface, Au
     //const mystate = thunkApi.getState()
     //const {user_metadata, accessTokenAuth0} = await GetUserMetadata(authobject)
     const p1 = GetUserMetadata(authobject)
+    //const response1 = await p1
     const p2 = GetClearConnectToken(authobject)
+    //const  clearConnectToken = await p2    
     const [response1, clearConnectToken] = await Promise.all([p1, p2])
     return { auth0: response1.accessTokenAuth0, clearConnect: clearConnectToken, auth0UserMetaData: response1.user_metadata }
   }

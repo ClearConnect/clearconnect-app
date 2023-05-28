@@ -23,6 +23,7 @@ import NavDrawer from './features/Nav/NavDrawer';
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
 //import ReqCard from './features/jobs/ReqCard';
 
+import { NewJobForContact  } from './features/jobs/PasteJobDesc'; 
 
 
 
@@ -33,13 +34,12 @@ interface AppProps { }
 
 interface MyComponentState {
   isOpen: boolean;
+  optionSelected: string | null
 }
 
-
-//function App() {
 const App: React.FC<AppProps> = () => {
   const { isAuthenticated, isLoading } = useAuth0();
-  const [open, setOpen] = useState<MyComponentState>({ isOpen: false });
+  const [drawerState, setDrawerState] = useState<MyComponentState>({ isOpen: false, optionSelected: '' });
   const authObject = useAuth0()
   const dispatch = useAppDispatch()
   const tokenStatus = useAppSelector(state => state.tokens.status)
@@ -52,11 +52,15 @@ const App: React.FC<AppProps> = () => {
   })
   const kukuk = userIdFromAuth0Metadata
   function handleAvatarClick(): void {
-    setOpen({ isOpen: true })
+    setDrawerState({ ...drawerState, isOpen: true })
+  }
+  const handleDrawerClick: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
+    setDrawerState({ ...drawerState, optionSelected: event.currentTarget.textContent })
+    console.log(`Clicked on ${event.currentTarget.innerText}`);
   }
 
   const handleDrawerClose = () => {
-    setOpen({ isOpen: false });
+    setDrawerState({ ...drawerState,isOpen: false });
   };
 
   useEffect(() => {
@@ -65,6 +69,8 @@ const App: React.FC<AppProps> = () => {
     }
   }, [tokenStatus, authObject, dispatch])
 
+  const newJobOptionSelected: boolean = true//drawerState.optionSelected == 'Item 1'
+  
   return (
     <>
       <div><Avatar sx={{
@@ -78,10 +84,11 @@ const App: React.FC<AppProps> = () => {
         {
           (tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
             (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
-              (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />
+              (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> :
+              ( newJobOptionSelected )?<NewJobForContact cntId={userIdFromAuth0Metadata} /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />
         }
       </div>
-      <div> <NavDrawer items={["Item 1", "Item 2", "Item 3"]} isOpen={open.isOpen} onClose={handleDrawerClose} />    </div>
+      <div> <NavDrawer items={["Item 1", "Item 2", "Item 3"]} isOpen={drawerState.isOpen} onClose={handleDrawerClose} onClick={handleDrawerClick}/>    </div>
     </>
   );
 }
