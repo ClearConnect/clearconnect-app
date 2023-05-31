@@ -16,25 +16,27 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  
+
   <React.StrictMode>
-   <ToggleColorMode  child={
-    <Provider store={store}>
-      <Auth0Provider
-        domain="dev-1tkiivqacmubkas5.us.auth0.com"
-        clientId="gZxAQIU9dXOMozZwikrSHAw7LAivYq34"
-        authorizationParams={{
-          redirect_uri: window.location.origin,
-          audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
-      scope: "read:current_user read:users read:users_app_metadata"     
-        }}
-      >
-        <ToggleColorMode  child={<App />} />
-        
-      </Auth0Provider>
-    </Provider>
-   } />
-    
+    <ToggleColorMode child={
+      <Provider store={store}>
+        <Auth0Provider
+          domain="dev-1tkiivqacmubkas5.us.auth0.com"
+          clientId="gZxAQIU9dXOMozZwikrSHAw7LAivYq34"
+          authorizationParams={{
+            useRefreshTokens: false,
+            redirect_uri: window.location.origin,
+            audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
+            scope: "read:current_user read:users read:users_app_metadata",
+            //prompt: "consent"
+          }}
+        >
+          <ToggleColorMode child={<App />} />
+
+        </Auth0Provider>
+      </Provider>
+    } />
+
   </React.StrictMode>
 );
 

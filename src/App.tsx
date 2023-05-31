@@ -23,9 +23,30 @@ import NavDrawer from './features/Nav/NavDrawer';
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
 //import ReqCard from './features/jobs/ReqCard';
 
-import { NewJobForContact  } from './features/jobs/PasteJobDesc'; 
+import { NewJobForContact } from './features/jobs/PasteJobDesc';
+//import { Router } from '@mui/icons-material';
+//import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
+import * as ReactDOM from "react-dom/client";
+import {
+  BrowserRouter,
+  Link,
+  Route,
+  Routes,
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 
+/* const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <div>
+      (tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
+      (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
+      (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />
+    </div>,
+  },
+]); */
 
 //let openDrawer:boolean
 //function handleDrawerClose() : void{}
@@ -36,7 +57,9 @@ interface MyComponentState {
   isOpen: boolean;
   optionSelected: string | null
 }
-
+/* export default function App() {
+  return <RouterProvider router={router} />;
+} */
 const App: React.FC<AppProps> = () => {
   const { isAuthenticated, isLoading } = useAuth0();
   const [drawerState, setDrawerState] = useState<MyComponentState>({ isOpen: false, optionSelected: '' });
@@ -47,7 +70,7 @@ const App: React.FC<AppProps> = () => {
   const userIdFromAuth0Metadata: number = useAppSelector(state => {
     if (state.tokens.auth0UserMetaData === undefined)
       return 0
-      const {cnt_contact_id} = state.tokens.auth0UserMetaData
+    const { cnt_contact_id } = state.tokens.auth0UserMetaData
     return state.tokens.auth0UserMetaData.cnt_contact_id
   })
   const kukuk = userIdFromAuth0Metadata
@@ -60,7 +83,7 @@ const App: React.FC<AppProps> = () => {
   }
 
   const handleDrawerClose = () => {
-    setDrawerState({ ...drawerState,isOpen: false });
+    setDrawerState({ ...drawerState, isOpen: false });
   };
 
   useEffect(() => {
@@ -69,29 +92,40 @@ const App: React.FC<AppProps> = () => {
     }
   }, [tokenStatus, authObject, dispatch])
 
-  const newJobOptionSelected: boolean = true//drawerState.optionSelected == 'Item 1'
-  
+  const newJobOptionSelected: boolean = false//drawerState.optionSelected == 'Item 1'
+
   return (
-    <>
-      <div><Avatar sx={{
-        position: 'absolute',
-        top: '20px',
-        left: '15px',
-        zIndex: 1,
-        opacity: 0.9,
-      }} onClick={handleAvatarClick} >JD</Avatar></div>
-      <div>
-        {
-          (tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
-            (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
-              (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> :
-              ( newJobOptionSelected )?<NewJobForContact cntId={userIdFromAuth0Metadata} /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />
-        }
-      </div>
-      <div> <NavDrawer items={["Item 1", "Item 2", "Item 3"]} isOpen={drawerState.isOpen} onClose={handleDrawerClose} onClick={handleDrawerClick}/>    </div>
-    </>
+    <BrowserRouter>
+      <>
+      <Routes>
+          <Route path="/"
+            element={(
+              <div>
+                {(tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
+                (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
+                (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />}
+              </div>
+            )} />
+          <Route path="/PasteJob" element={<NewJobForContact cntId={userIdFromAuth0Metadata} />}
+          />
+        </Routes>
+        <div><Avatar sx={{
+          position: 'absolute',
+          top: '20px',
+          left: '15px',
+          zIndex: 1,
+          opacity: 0.9,
+        }} onClick={handleAvatarClick} >JD</Avatar></div>
+       
+        <div> <NavDrawer items={[
+          { itemTitle: "Paste Job", itemHref: "/PasteJob" },
+          { itemTitle: "Jobs", itemHref: "/" },
+          { itemTitle: "Item 3", itemHref: "/" }
+        ]} isOpen={drawerState.isOpen} onClose={handleDrawerClose} onClick={handleDrawerClick} />    </div>
+      </>
+    </BrowserRouter>
   );
 }
-export default App;
 
+export default App
 

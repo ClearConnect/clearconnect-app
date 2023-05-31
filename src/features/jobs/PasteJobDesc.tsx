@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, Button, Box, FormGroup } from '@mui/material';
+import { TextField, Button, Box, FormGroup, FormControl, Grid, Card, CardContent, Typography } from '@mui/material';
 
 interface FormValues {
     Title: string;
@@ -44,39 +44,57 @@ export const NewJobForContact: React.FC<NewJobForContactProps> = (contactId) => 
             });
             return;
         }
+        setErrors({
+            Title: '',
+            Description: '',
+        })
         console.log(`Title: ${values.Title}, Description: ${values.Description}`);
     };
-
+    // <Box sx={{ width: '90%', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
     return (
         <form onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-                <FormGroup >
-                    <TextField 
-                        label="Title"
-                        value={values.Title}
-                        onChange={handleChange}
-                        error={Boolean(errors.Title)}
-                        helperText={errors.Title}
-                        spellCheck
-                        variant="outlined"
-                    />
-                    <TextField
-                        label="Description"
-                        value={values.Description}
-                        onChange={handleChange}
-                        error={Boolean(errors.Description)}
-                        helperText={errors.Description}
-                        multiline
-                        rows={10}
-                        variant="outlined"
-                        spellCheck
-                        InputProps={{
-                            sx: { '& textarea': { overflowY: 'scroll' } },
-                        }}
-                    />
-                    <Button type="submit">Submit</Button>
-                </FormGroup>
-            </Box>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                    <Card sx={{ borderRadius: 5 }}>
+                        <CardContent>                           
+                                <FormControl sx={{ width: '100%'}}>
+                                    <FormGroup sx={{  gap: '20px' }}>
+                                        <TextField sx={{ width: '100%' }}
+                                            label="Title"
+                                            name="Title"
+                                            value={values.Title}
+                                            onChange={handleChange}
+                                            error={Boolean(errors.Title)}
+                                            helperText={errors.Title}
+                                            spellCheck
+                                            variant="outlined"
+                                        />
+                                        <TextField
+                                            label="Description"
+                                            name="Description"
+                                            value={values.Description}
+                                            onChange={handleChange}
+                                            error={Boolean(errors.Description)}
+                                            helperText={errors.Description}
+                                            multiline
+                                            rows={20}
+                                            variant="outlined"
+                                            spellCheck
+                                            InputProps={{
+                                                sx: { '& textarea': { overflowY: 'scroll' } },
+                                            }}
+                                        />
+                                        <Button type="submit">Submit</Button>
+                                    </FormGroup>
+                                </FormControl>
+                            
+
+                        </CardContent>
+
+                    </Card>
+
+                </Grid>
+            </Grid>
         </form>
 
     );

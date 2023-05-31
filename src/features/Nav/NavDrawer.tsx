@@ -15,9 +15,13 @@ export interface MyContextInterface {
     setData: () => {},
   });
 
+  interface ItemHref {
+    itemTitle: string;
+    itemHref: string;
+  }
 
 interface NavDrawerProps {
-    items: string[];
+    items: ItemHref[];
     isOpen: boolean;
     onClose: () => void;
     onClick: React.MouseEventHandler<HTMLAnchorElement> ;
@@ -43,8 +47,8 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ items, isOpen, onClose, onClick }
                 <div style={{ width: 250 }}>
                     <List>
                         {isAuthenticated ? items.map((item, index) => (
-                            <ListItemButton  href="/" key={index} onClick = {onClick}>
-                                <ListItemText primary={item} />
+                            <ListItemButton  href={item.itemHref} key={index} onClick = {onClick}>
+                                <ListItemText primary={item.itemTitle} />
                             </ListItemButton>
                         )) : ''}
                         <ListItemButton key={10000} onClick={onClose}>
