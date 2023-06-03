@@ -42,7 +42,8 @@ export const apiSlice = createApi({
         return `/Req/GetContactReqs/${contactId}`
       },
     }),
-    AddJob: builder.mutation< ReqData, Pick<  ReqData, 'JrPosDescription'> & Partial<ReqData>  >({
+    //AddJob: builder.mutation< ReqData, Pick<  ReqData, 'JrPosDescription'> & Partial<ReqData>  >({
+      AddJob: builder.mutation< ReqData, ReqData  >({
       query: ( reqData) => ({
         url: `/PostReq`,
         method: 'POST',
