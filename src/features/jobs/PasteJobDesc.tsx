@@ -44,8 +44,8 @@ export const NewJobForContact: React.FC<NewJobForContactProps> = (contactId) => 
         const canSave = [values.jrPosDescription, values.jrPositionTitle, values.id].every(Boolean) && !isLoading
           if (canSave) {
              try {
-                 let  reqData:ReqData  = {}        
-                 await AddJob({...reqData, JrPositionTitle: values.jrPositionTitle,  JrPosDescription: values.jrPosDescription, JrId: values.id }).unwrap()
+                 //let  reqData:ReqData  = {}        
+                 await AddJob({/* ...reqData, */ JrPositionTitle: values.jrPositionTitle,  JrPosDescription: values.jrPosDescription, JrId: values.id }).unwrap()
              } catch (err) {
                  console.error('Failed to save the post: ', err)
              }
