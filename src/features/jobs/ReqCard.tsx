@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardActions, CardContent, Tooltip, Typography } from "@mui/material";
-
+import { useNavigate } from 'react-router-dom';
 /* import { Document, Page } from 'react-pdf';
 
 function MyComponent({ pdfBlob }) {
@@ -37,7 +37,11 @@ export interface ReqCardProps {
 }
 
 const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
+  const navigate = useNavigate();
 
+  const handleButtonClick = () => {
+    navigate('/your-route'); // Replace '/your-route' with the actual route you want to navigate to
+  };
   //export default function ReqCard(ReqCardData: any) {
   const title: string = ReqCardData.jrPositionTitle
   const kuku = ReqCardData.jrId
@@ -57,7 +61,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
         </Box>
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button size="small">Contacts</Button>
       </CardActions>
     </Card>
   );

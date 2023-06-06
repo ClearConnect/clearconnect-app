@@ -37,6 +37,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import ContactCardGrid from './features/contacts/ContactCardGrid'
 /* const router = createBrowserRouter([
   {
     path: "/",
@@ -97,17 +98,19 @@ const App: React.FC<AppProps> = () => {
   return (
     <BrowserRouter>
       <>
-      <Routes>
+        <Routes>
           <Route path="/"
-            element={(
+            element=
+            {(
               <div>
                 {(tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
-                (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
-                (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />}
+                  (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
+                    (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />
+                }
               </div>
             )} />
-          <Route path="/PasteJob" element={<NewJobForContact cntId={userIdFromAuth0Metadata} />}
-          />
+            <Route path="/PasteJob" element={<NewJobForContact cntId={userIdFromAuth0Metadata} />} />
+            <Route path="/JobContacts" element={<ContactCardGrid  JrId={20} />} />
         </Routes>
         <div><Avatar sx={{
           position: 'absolute',
@@ -116,11 +119,11 @@ const App: React.FC<AppProps> = () => {
           zIndex: 1,
           opacity: 0.9,
         }} onClick={handleAvatarClick} >JD</Avatar></div>
-       
+
         <div> <NavDrawer items={[
           { itemTitle: "Paste Job", itemHref: "/PasteJob" },
           { itemTitle: "Jobs", itemHref: "/" },
-          { itemTitle: "Item 3", itemHref: "/" }
+          { itemTitle: "Job Contacts", itemHref: "/JobContacts" }
         ]} isOpen={drawerState.isOpen} onClose={handleDrawerClose} onClick={handleDrawerClick} />    </div>
       </>
     </BrowserRouter>
