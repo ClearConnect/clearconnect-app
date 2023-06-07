@@ -2,31 +2,30 @@ import React from 'react';
 import { Avatar, Box, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material';
 import MyCardImage from '../../logo.svg';
 import ReqCard from './ReqCard';
-import { useGetJobsForContactQuery } from '../api/apiSlice'
+import { useGetJobsForContactQuery,IdProp } from '../api/apiSlice'
 import { ProgressBar } from '../../theme/Theme';
 import {  FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
- export interface ReqCardGridProps {
-  cntId: number;
+/*  export interface IdProp {
+  Id: number;
   //AvatarClickFunction: () => void;
-} 
+}  */
 
-const ReqCardGrid: React.FC<ReqCardGridProps> = (cntId) => {
+const ReqCardGrid: React.FC<IdProp> = (cntId) => {
   const {
     data: Reqs,
     isLoading,
     isSuccess,
     isError,
     error
-  } = useGetJobsForContactQuery(cntId.cntId)
+  } = useGetJobsForContactQuery(cntId.Id)
 
   //const Result =  useGetJobsForContactQuery(2037)
   let boxContent : React.ReactElement | null = null
   let gridItems = null
   if (isLoading) {
     boxContent =  <ProgressBar message='Getting Jobs for you...' />
-  } else if (isSuccess) {
-   
+  } else if (isSuccess) {   
     gridItems = Reqs.map ( req =>  { 
       const c = req['jrId']
       return (<Grid item key={req['jrId']} xs={12} sm={6} md={4} lg={3} xl={2}>

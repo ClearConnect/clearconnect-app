@@ -1,27 +1,27 @@
 import { useState } from 'react';
 import { TextField, Button, Box, FormGroup, FormControl, Grid, Card, CardContent, Typography } from '@mui/material';
-import { useAddJobMutation } from '../api/apiSlice'
+import { useAddJobMutation, IdProp } from '../api/apiSlice'
 import { ReqData } from '../jobs/ReqInterfaces';
 
 
-export interface NewJobForContactProps {
+/* export interface NewJobForContactProps {
     cntId: number;
     //AvatarClickFunction: () => void;
-}
+} */
 interface FormValues {
     id: number;
     jrPositionTitle: string;
     jrPosDescription: string;
     [key: string]: number | string; // Add an index signature that allows string keys with number or string values
 }
-export const NewJobForContact: React.FC<NewJobForContactProps> = (contactId) => {
+export const NewJobForContact: React.FC<IdProp> = (contactId) => {
     const [values, setValues] = useState<FormValues>({
         jrPositionTitle: '',
         jrPosDescription: '',
         id: 2037//contactId.cntId
     });
     const [errors, setErrors] = useState<FormValues>({
-        id: contactId.cntId,
+        id: contactId.Id,
         jrPositionTitle: '',
         jrPosDescription: '',
     });
@@ -88,6 +88,5 @@ export const NewJobForContact: React.FC<NewJobForContactProps> = (contactId) => 
                 </FormControl>
             </Box>
         </form>
-
     );
 }

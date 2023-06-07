@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import ContactCard from './ContactCard';
+import { useGetJobsForContactQuery, IdProp } from '../api/apiSlice'
 
 interface Contact {
   name: string;
@@ -46,11 +47,11 @@ const contacts: Contact[] = [
   // Add more contact objects as needed
 ];
 
-export interface ContactCardGridProps {
-    JrId: number;
+/* export interface IdProp {
+    Id: number;
     //AvatarClickFunction: () => void;
-  } 
-const ContactCardGrid: React.FC<ContactCardGridProps> = ({JrId}) => {
+  }  */
+const ContactCardGrid: React.FC<IdProp> = ( jrId ) => {
   return (
     <Grid container spacing={2}>
       {contacts.map((contact, index) => (

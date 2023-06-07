@@ -55,3 +55,7 @@ export const apiSlice = createApi({
 
 // Export the auto-generated hook for the `getPosts` query endpoint
 export const { useGetJobsForContactQuery, useGetContactInfoQuery,  useAddJobMutation } = apiSlice
+
+export interface IdProp {
+  Id: number;  
+} 

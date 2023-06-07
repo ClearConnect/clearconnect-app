@@ -1,24 +1,6 @@
 import { Box, Button, Card, CardActions, CardContent, Tooltip, Typography } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-/* import { Document, Page } from 'react-pdf';
 
-function MyComponent({ pdfBlob }) {
-  return (
-    <Document file={pdfBlob}>
-      <Page pageNumber={1} />
-    </Document>
-  );
-} */
-
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
-//be{bull}nev{bull}o{bull}lent
 export interface ReqCardData {
   //imageUrl: string;
   title: string;
@@ -39,8 +21,9 @@ export interface ReqCardProps {
 const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   const navigate = useNavigate();
 
-  const handleButtonClick = () => {
-    navigate('/your-route'); // Replace '/your-route' with the actual route you want to navigate to
+  const handleButtonClick = ( event: React.MouseEvent<HTMLButtonElement>) => {
+    const kuku = `/JobContacts/${event.currentTarget.name}`
+    navigate(`/JobContacts/${event.currentTarget.name}`); // Replace '/your-route' with the actual route you want to navigate to
   };
   //export default function ReqCard(ReqCardData: any) {
   const title: string = ReqCardData.jrPositionTitle
@@ -61,7 +44,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
         </Box>
       </CardContent>
       <CardActions>
-        <Button size="small">Contacts</Button>
+        <Button size="medium" name={ReqCardData.jrId} onClick={handleButtonClick}>Contacts</Button>
       </CardActions>
     </Card>
   );

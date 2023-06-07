@@ -5,27 +5,15 @@ import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from './app/hooks'
 //import { selectStatus } from './features/auth/AccessTokenSlice';
 import { getAuth0APIAccessToken } from './features/auth/AccessTokenSlice'
-
+import {  IdProp } from './features/api/apiSlice'
 import { useAuth0 } from "@auth0/auth0-react";
-//import Paper from "@mui/material/Paper";
 
-//import logo from './logo.svg';
-//import './App.css';
 import ReqCardGrid from './features/jobs/ReqCardGrid';
-
-//import { LoginButton } from "./features/auth/login"
 import { WelcomeGrid, MessageOnEmptyScreen } from "./theme/Theme"
-//import { darkTheme, lightTheme } from './theme/Theme';
-//import { ThemeProvider } from '@mui/material/styles';
 import NavDrawer from './features/Nav/NavDrawer';
-
-//import { ToggleColorMode } from './app/ColorToggle';
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
-//import ReqCard from './features/jobs/ReqCard';
 
 import { NewJobForContact } from './features/jobs/PasteJobDesc';
-//import { Router } from '@mui/icons-material';
-//import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 import * as ReactDOM from "react-dom/client";
 import {
@@ -35,22 +23,11 @@ import {
   Routes,
   createBrowserRouter,
   RouterProvider,
+  useParams 
 } from "react-router-dom";
 
 import ContactCardGrid from './features/contacts/ContactCardGrid'
-/* const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <div>
-      (tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
-      (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
-      (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />
-    </div>,
-  },
-]); */
 
-//let openDrawer:boolean
-//function handleDrawerClose() : void{}
 
 interface AppProps { }
 
@@ -94,7 +71,7 @@ const App: React.FC<AppProps> = () => {
   }, [tokenStatus, authObject, dispatch])
 
   const newJobOptionSelected: boolean = false//drawerState.optionSelected == 'Item 1'
-
+// cntId={userIdFromAuth0Metadata} />} />
   return (
     <BrowserRouter>
       <>
@@ -105,12 +82,12 @@ const App: React.FC<AppProps> = () => {
               <div>
                 {(tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
                   (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
-                    (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid cntId={userIdFromAuth0Metadata} />
+                    (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid Id={userIdFromAuth0Metadata} />
                 }
               </div>
             )} />
-            <Route path="/PasteJob" element={<NewJobForContact cntId={userIdFromAuth0Metadata} />} />
-            <Route path="/JobContacts" element={<ContactCardGrid  JrId={20} />} />
+            <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact} />} />
+            <Route path="/JobContacts/:Id" element={< UserPageWrapper component={ContactCardGrid}   />} />
         </Routes>
         <div><Avatar sx={{
           position: 'absolute',
@@ -121,14 +98,23 @@ const App: React.FC<AppProps> = () => {
         }} onClick={handleAvatarClick} >JD</Avatar></div>
 
         <div> <NavDrawer items={[
-          { itemTitle: "Paste Job", itemHref: "/PasteJob" },
+          { itemTitle: "Paste Job", itemHref: "/PasteJob/:Id" },
           { itemTitle: "Jobs", itemHref: "/" },
-          { itemTitle: "Job Contacts", itemHref: "/JobContacts" }
+          { itemTitle: "Job Contacts", itemHref: "/JobContacts/:Id" }
         ]} isOpen={drawerState.isOpen} onClose={handleDrawerClose} onClick={handleDrawerClick} />    </div>
       </>
     </BrowserRouter>
   );
 }
+
+const UserPageWrapper: React.FC<{
+  component: React.ComponentType<IdProp>;
+  //propName: string;
+}> = ({ component: Component }) => {
+  const { Id } = useParams();
+  const dynamicProp = { Id: parseInt(Id as string) };
+  return <Component {...dynamicProp} />;
+};
 
 export default App
 
