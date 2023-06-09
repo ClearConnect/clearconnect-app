@@ -1,13 +1,8 @@
 import { useState } from 'react';
 import { TextField, Button, Box, FormGroup, FormControl, Grid, Card, CardContent, Typography } from '@mui/material';
-import { useAddJobMutation, IdProp } from '../api/apiSlice'
+import { useAddJobForContactMutation, IdProp } from '../api/apiSlice'
 import { ReqData } from '../jobs/ReqInterfaces';
 
-
-/* export interface NewJobForContactProps {
-    cntId: number;
-    //AvatarClickFunction: () => void;
-} */
 interface FormValues {
     id: number;
     jrPositionTitle: string;
@@ -25,7 +20,7 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
         jrPositionTitle: '',
         jrPosDescription: '',
     });
-    const [AddJob, { isLoading }] = useAddJobMutation()
+    const [AddJob, { isLoading }] = useAddJobForContactMutation()
    
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {     
             setValues({
@@ -45,14 +40,14 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
           if (canSave) {
              try {
                  //let  reqData:ReqData  = {}        
-                 await AddJob({/* ...reqData, */ JrPositionTitle: values.jrPositionTitle,  JrPosDescription: values.jrPosDescription, JrId: values.id }).unwrap()
+                 await AddJob({cntId: contactId.Id, reqData: { JrPositionTitle: values.jrPositionTitle,  JrPosDescription: values.jrPosDescription, JrId: values.id }}).unwrap()
              } catch (err) {
                  console.error('Failed to save the post: ', err)
              }
          }; 
 
     };
-    // <Box sx={{ width: '90%', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+    
     return (
         <form onSubmit={handleSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>

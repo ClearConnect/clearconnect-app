@@ -3,6 +3,9 @@ import { createApi, BaseQueryFn, fetchBaseQuery } from '@reduxjs/toolkit/query/r
 import { RootState } from '../../app/store';
 import {  ReqData } from '../jobs/ReqInterfaces';
 
+
+
+
 const baseQuery = fetchBaseQuery({
   baseUrl: 'https://localhost:7165',
   prepareHeaders: (headers, { getState }) => {
@@ -42,9 +45,15 @@ export const apiSlice = createApi({
         return `/Req/GetContactReqs/${contactId}`
       },
     }),
-    AddJob: builder.mutation< ReqData, Pick<  ReqData, 'JrPosDescription'> & Partial<ReqData>  >({
+    getContactsForJob: builder.query<[any], number>({
+      // The URL for the request is '/fakeApi/posts'
+      query: (jrId: number) => {
+        return `/Req/GetReqContacts/${jrId}`
+      },
+    }),
+    AddJobForContact: builder.mutation< ReqData, {cntId: number, reqData: Pick<  ReqData, 'JrPosDescription'> & Partial<ReqData>  }>({
     //  AddJob: builder.mutation< ReqData, ReqData  >({
-      query: ( reqData) => ({
+      query: ( {cntId, reqData}) => ({
         url: `/Req/PostReq`,
         method: 'POST',
         body: reqData,
@@ -54,7 +63,7 @@ export const apiSlice = createApi({
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetJobsForContactQuery, useGetContactInfoQuery,  useAddJobMutation } = apiSlice
+export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery,  useAddJobForContactMutation } = apiSlice
 
 export interface IdProp {
   Id: number;  
