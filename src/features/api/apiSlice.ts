@@ -1,9 +1,29 @@
 // Import the RTK Query methods from the React-specific entry point
+import { createSlice } from '@reduxjs/toolkit';
 import { createApi, BaseQueryFn, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
-import {  ReqData } from '../jobs/ReqInterfaces';
+import { ReqData } from '../jobs/ReqInterfaces';
 
+interface successState {
+  noContent: boolean,
+  successRetCode: number
+}
 
+interface codeAction {
+  type: string;
+  payload: number;
+}
+const initsucessState: successState = { noContent: false, successRetCode: 0 }
+export const apiResourceSlice = createSlice({
+  name: 'resource',
+  initialState: initsucessState,
+  reducers: {
+    codeReducer: (state: successState, action: codeAction): successState => {
+      return { ...state, noContent: true, successRetCode: action.payload };
+    },
+  },
+});
 
 
 const baseQuery = fetchBaseQuery({
@@ -47,24 +67,37 @@ export const apiSlice = createApi({
     }),
     getContactsForJob: builder.query<[any], number>({
       // The URL for the request is '/fakeApi/posts'
-      query: (jrId: number) => {
-        return `/Req/GetReqContacts/${jrId}`
+      query: (jrId) => {
+        return `/Contact/GetReqContacts/${jrId}`
       },
+      transformResponse: (response: Response, meta): Promise<any> => {
+        const dispatch = useDispatch();
+        // The optional `meta` property is available based on the type for the `baseQuery` used
+        // The return value for `transformResponse` must match `ResultType`
+        if (response.status === 204) {
+          //const dispatch = useDispatch();
+          dispatch(apiResourceSlice.actions.codeReducer(204));
+          return Promise.reject(new Error('Resource not found'));
+          return Promise.resolve(null);
+        }
+        return Promise.resolve(Response);
+      },
+
     }),
-    AddJobForContact: builder.mutation< ReqData, {cntId: number, reqData: Pick<  ReqData, 'JrPosDescription'> & Partial<ReqData>  }>({
-    //  AddJob: builder.mutation< ReqData, ReqData  >({
-      query: ( {cntId, reqData}) => ({
-        url: `/Req/PostReq`,
+    AddJobForContact: builder.mutation<ReqData, { cntId: number, reqData: Pick<ReqData, 'JrPosDescription'> & Partial<ReqData> }>({
+      //  AddJob: builder.mutation< ReqData, ReqData  >({
+      query: ({ cntId, reqData }) => ({
+        url: `/Req/PostReq/${cntId}`,
         method: 'POST',
         body: reqData,
       }),
-  })
+    })
   })
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery,  useAddJobForContactMutation } = apiSlice
+export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery, useAddJobForContactMutation } = apiSlice
 
 export interface IdProp {
-  Id: number;  
+  Id: number;
 } 
