@@ -34,17 +34,17 @@ export interface ContactCardProps {
 )} */
 //sx={{ display: 'flex', alignItems: 'center', padding: 2 }}
 const ContactCard: React.FC<any> = (contactData) => {
-    const handleEmailClick = () => {
-        window.location.href = `mailto:${contactData.cntEmail}`;
-      };
-      const handleDialClick = () => {
-        window.location.href = `tel:${contactData.cntPhone}`;
-      };
+  const handleEmailClick = () => {
+    window.location.href = `mailto:${contactData.cntEmail}`;
+  };
+  const handleDialClick = () => {
+    window.location.href = `tel:${contactData.cntPhone}`;
+  };
   return (
-    <Card  sx={{ borderRadius: 5 }} >
-            <CardContent>
-            <Avatar alt={`${contactData.cntFirstName} ${contactData.cntLastName}`} src={'path/to/avatar1.jpg'} sx={{ marginRight: 2 }} />
-<Typography variant="h6">{`${contactData.cntFirstName} ${contactData.cntLastName}`}</Typography>
+    <Card sx={{ borderRadius: 5 }} >
+      <CardContent>
+        <Avatar alt={`${contactData.cntFirstName} ${contactData.cntLastName}`} src={'path/to/avatar1.jpg'} sx={{ marginRight: 2 }} />
+        <Typography variant="h6">{`${contactData.cntFirstName} ${contactData.cntLastName}`}</Typography>
         <Typography variant="subtitle1" color="textSecondary">
           {contactData.cntTitle}
         </Typography>
@@ -52,13 +52,19 @@ const ContactCard: React.FC<any> = (contactData) => {
           <EmailIcon /> <a href={`mailto:${contactData.cntEmail}`} onClick={handleEmailClick}>{contactData.cntEmail}</a>
         </Typography>
         <Typography variant="body1">
-          <PhoneIcon /> {contactData.cntPhone} <button onClick={handleDialClick}>Dial</button>
+          {contactData.cntMobilPhone && (<><PhoneIcon />{contactData.cntMobilePhone} <button onClick={handleDialClick}>Dial</button></>)}
+        </Typography>
+        <Typography variant="body1">
+          {contactData.cntPhone && (<><PhoneIcon /> {contactData.cntPhone} <button onClick={handleDialClick}>Dial</button></>)}
+        </Typography>
+        <Typography variant="body1">
+          {contactData.cntHomePhone && (<><PhoneIcon /> {contactData.cntHomePhone} <button onClick={handleDialClick}>Dial</button></>)}
         </Typography>
         <Typography variant="body2" color="textSecondary">
           <LocationOnIcon /> {`${contactData.cntHomeAddress}, ${contactData.cntHomeCity}, ${contactData.cntHomeState} ${contactData.cntHomeZip}`}
         </Typography>
         <Box sx={{ marginLeft: 'auto', '& > *': { marginRight: 1 } }}>
-          
+
           {contactData.cntLinkedin && (
             <IconButton aria-label="LinkedIn" color="primary" href={contactData.cntLinkedin} target="_blank" rel="noopener noreferrer">
               <LinkedInIcon />

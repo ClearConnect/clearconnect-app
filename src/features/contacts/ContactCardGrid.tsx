@@ -56,7 +56,7 @@ const ContactCardGrid: React.FC<IdProp> = ( Contact ) => {
   if (isLoading) {
     boxContent =  <ProgressBar message='Getting Jobs Contacts...' />
   } else if (isSuccess) {   
-    if( contacts[0] === null){
+    if( contacts === null){
      return( <ExpandableBox />)
     } else {gridItems = contacts.map ( (contact, index) =>  { 
       //const c = req['jrId']

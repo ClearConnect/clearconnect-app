@@ -70,14 +70,14 @@ export const apiSlice = createApi({
       query: (jrId) => {
         return `/Contact/GetReqContacts/${jrId}`
       },
-      transformResponse: (rawResult: [any] , meta) => {
+      /* transformResponse: (rawResult: [any] , meta) => {
         //                                                        ^
         // The optional `meta` property is available based on the type for the `baseQuery` used
         // The return value for `transformResponse` must match `ResultType`
         if( meta?.response?.status === 204)
         { return [null]}
         return rawResult
-      },
+      }, */
 
     }),
     AddJobForContact: builder.mutation<ReqData, { cntId: number, reqData: Pick<ReqData, 'JrPosDescription'> & Partial<ReqData> }>({
