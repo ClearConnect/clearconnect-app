@@ -22,45 +22,45 @@ export interface ContactCardProps {
     linkedin?: string;
   };
 }
-
-
-const ContactCard: React.FC<ContactCardProps> = ({ name, title, email, phone, avatar, address, social }) => {
+/* {social.facebook && (
+  <IconButton aria-label="Facebook" color="primary" href={social.facebook} target="_blank" rel="noopener noreferrer">
+    <FacebookIcon />
+  </IconButton>
+)}
+{social.twitter && (
+  <IconButton aria-label="Twitter" color="primary" href={social.twitter} target="_blank" rel="noopener noreferrer">
+    <TwitterIcon />
+  </IconButton>
+)} */
+//sx={{ display: 'flex', alignItems: 'center', padding: 2 }}
+const ContactCard: React.FC<any> = (contactData) => {
     const handleEmailClick = () => {
-        window.location.href = `mailto:${email}`;
+        window.location.href = `mailto:${contactData.cntEmail}`;
       };
       const handleDialClick = () => {
-        window.location.href = `tel:${phone}`;
+        window.location.href = `tel:${contactData.cntPhone}`;
       };
   return (
-    <Card sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
-      <Avatar alt={name} src={avatar} sx={{ marginRight: 2 }} />
-      <CardContent>
-        <Typography variant="h6">{name}</Typography>
+    <Card  sx={{ borderRadius: 5 }} >
+            <CardContent>
+            <Avatar alt={`${contactData.cntFirstName} ${contactData.cntLastName}`} src={'path/to/avatar1.jpg'} sx={{ marginRight: 2 }} />
+<Typography variant="h6">{`${contactData.cntFirstName} ${contactData.cntLastName}`}</Typography>
         <Typography variant="subtitle1" color="textSecondary">
-          {title}
+          {contactData.cntTitle}
         </Typography>
         <Typography variant="body1">
-          <EmailIcon /> <a href={`mailto:${email}`} onClick={handleEmailClick}>{email}</a>
+          <EmailIcon /> <a href={`mailto:${contactData.cntEmail}`} onClick={handleEmailClick}>{contactData.cntEmail}</a>
         </Typography>
         <Typography variant="body1">
-          <PhoneIcon /> {phone} <button onClick={handleDialClick}>Dial</button>
+          <PhoneIcon /> {contactData.cntPhone} <button onClick={handleDialClick}>Dial</button>
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          <LocationOnIcon /> {address}
+          <LocationOnIcon /> {`${contactData.cntHomeAddress}, ${contactData.cntHomeCity}, ${contactData.cntHomeState} ${contactData.cntHomeZip}`}
         </Typography>
         <Box sx={{ marginLeft: 'auto', '& > *': { marginRight: 1 } }}>
-          {social.facebook && (
-            <IconButton aria-label="Facebook" color="primary" href={social.facebook} target="_blank" rel="noopener noreferrer">
-              <FacebookIcon />
-            </IconButton>
-          )}
-          {social.twitter && (
-            <IconButton aria-label="Twitter" color="primary" href={social.twitter} target="_blank" rel="noopener noreferrer">
-              <TwitterIcon />
-            </IconButton>
-          )}
-          {social.linkedin && (
-            <IconButton aria-label="LinkedIn" color="primary" href={social.linkedin} target="_blank" rel="noopener noreferrer">
+          
+          {contactData.cntLinkedin && (
+            <IconButton aria-label="LinkedIn" color="primary" href={contactData.cntLinkedin} target="_blank" rel="noopener noreferrer">
               <LinkedInIcon />
             </IconButton>
           )}

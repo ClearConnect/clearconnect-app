@@ -5,7 +5,7 @@ import { ContactCardProps } from './ContactCard';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { useGetContactsForJobQuery, IdProp } from '../api/apiSlice'
 import { ProgressBar } from '../../theme/Theme';
-
+import { ExpandableBox } from '../../app/transitions'
 
 const contacts: ContactCardProps[] = [
   {
@@ -56,12 +56,15 @@ const ContactCardGrid: React.FC<IdProp> = ( Contact ) => {
   if (isLoading) {
     boxContent =  <ProgressBar message='Getting Jobs Contacts...' />
   } else if (isSuccess) {   
-    gridItems = contacts.map ( (contact, index) =>  { 
+    if( contacts[0] === null){
+     return( <ExpandableBox />)
+    } else {gridItems = contacts.map ( (contact, index) =>  { 
       //const c = req['jrId']
       return (<Grid item key={index} xs={12} sm={6} md={4} lg={3} xl={2}>
                                     <ContactCard  {...contact} />
                                   </Grid>)
                                   })
+                                }
   } else if (isError) {
     const MyFetchBaseQueryError  = error as FetchBaseQueryError;  
     boxContent =  <ProgressBar message= {`Sorry, error ${MyFetchBaseQueryError.status.toString()} has occured.`}  />

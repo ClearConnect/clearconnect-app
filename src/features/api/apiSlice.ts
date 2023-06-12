@@ -70,17 +70,13 @@ export const apiSlice = createApi({
       query: (jrId) => {
         return `/Contact/GetReqContacts/${jrId}`
       },
-      transformResponse: (response: Response, meta): Promise<any> => {
-        const dispatch = useDispatch();
+      transformResponse: (rawResult: [any] , meta) => {
+        //                                                        ^
         // The optional `meta` property is available based on the type for the `baseQuery` used
         // The return value for `transformResponse` must match `ResultType`
-        if (response.status === 204) {
-          //const dispatch = useDispatch();
-          dispatch(apiResourceSlice.actions.codeReducer(204));
-          return Promise.reject(new Error('Resource not found'));
-          return Promise.resolve(null);
-        }
-        return Promise.resolve(Response);
+        if( meta?.response?.status === 204)
+        { return [null]}
+        return rawResult
       },
 
     }),
