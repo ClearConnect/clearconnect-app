@@ -27,6 +27,7 @@ import {
 } from "react-router-dom";
 
 import ContactCardGrid from './features/contacts/ContactCardGrid'
+import MediaControlCard from './features/contacts/ContactMedia';
 
 
 interface AppProps { }
@@ -88,6 +89,7 @@ const App: React.FC<AppProps> = () => {
             )} />
             <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact} />} />
             <Route path="/JobContacts/:Id" element={< UserPageWrapper component={ContactCardGrid}   />} />
+            <Route path="/me" element={< UserPageWrapper component={MediaControlCard}   />} />
         </Routes>
         <div><Avatar sx={{
           position: 'absolute',
@@ -100,7 +102,8 @@ const App: React.FC<AppProps> = () => {
         <div> <NavDrawer items={[
           { itemTitle: "Paste Job", itemHref: "/PasteJob/:Id" },
           { itemTitle: "Jobs", itemHref: "/" },
-          { itemTitle: "Job Contacts", itemHref: "/JobContacts/:Id" }
+          { itemTitle: "Job Contacts", itemHref: "/JobContacts/:Id" },
+          { itemTitle: "Me", itemHref: "/me" }
         ]} isOpen={drawerState.isOpen} onClose={handleDrawerClose} onClick={handleDrawerClick} />    </div>
       </>
     </BrowserRouter>

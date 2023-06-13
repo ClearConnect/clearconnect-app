@@ -51,13 +51,13 @@ export const apiSlice = createApi({
     getContactInfo: builder.query<any, number>({
       // The URL for the request is '/fakeApi/posts'
       query: (contactId: number) => `/Contacts/${contactId}`,
-      transformResponse: (rawResult: { result: { Contact: any } }, meta) => {
+      /* transformResponse: (rawResult: { result: { Contact: any } }, meta) => {
         //                                                        ^
         // The optional `meta` property is available based on the type for the `baseQuery` used
 
         // The return value for `transformResponse` must match `ResultType`
         return rawResult.result.Contact
-      },
+      }, */
     }),
     getJobsForContact: builder.query<[any], number>({
       // The URL for the request is '/fakeApi/posts'
