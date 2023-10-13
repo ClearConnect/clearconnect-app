@@ -26,8 +26,10 @@ root.render(
           authorizationParams={{
             useRefreshTokens: false,
             redirect_uri: window.location.origin,
-            audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
-            scope: "read:current_user read:users read:users_app_metadata",
+            //audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
+            //scope: "read:current_user read:users read:users_app_metadata",
+            audience: "https://clearconnect_API",
+            scope: "ReqAccess EventAccess",
             //prompt: "consent"
           }}
         >

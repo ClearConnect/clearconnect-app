@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Box, FormGroup, FormControl, Grid, Card, CardContent, Typography } from '@mui/material';
 import { useAddJobForContactMutation, IdProp } from '../api/apiSlice'
 import { ReqData } from '../jobs/ReqInterfaces';
@@ -21,7 +21,7 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
         jrPosDescription: '',
     });
     const [AddJob, { isLoading }] = useAddJobForContactMutation()
-   
+    const [isFormValid, setIsFormValid] = useState(false);
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {     
             setValues({
                 ...values,
@@ -30,7 +30,7 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
            setErrors({
                 ...errors,
                 [event.target.name]: !event.target.value ? `Text is required` : ''
-            }); 
+            });            
     }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,7 +47,21 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
          }; 
 
     };
-    
+    React.useEffect(() => {
+        const {jrPositionTitle,  jrPosDescription } = values;
+        const isValid = jrPositionTitle.trim() !== '' && jrPosDescription.trim() !== '';
+        setIsFormValid(isValid);
+        setErrors({
+            ...errors,
+            "jrPositionTitle": jrPositionTitle.trim() === '' ? `Text is required` : ''
+        }); 
+        setErrors({
+            ...errors,
+            "jrPosDescription": jrPosDescription.trim() === '' ? `Text is required` : ''
+        }); 
+        setIsFormValid(isValid);
+      });
+
     return (
         <form onSubmit={handleSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
@@ -78,7 +92,7 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
                                 sx: { '& textarea': { overflowY: 'scroll' } },
                             }}
                         />
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit"  disabled={!isFormValid} >Submit</Button>
                     </FormGroup>
                 </FormControl>
             </Box>

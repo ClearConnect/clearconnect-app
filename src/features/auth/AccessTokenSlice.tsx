@@ -58,7 +58,7 @@ async function GetClearConnectToken(auth0object: Auth0ContextInterface): Promise
       }
     }).then(accessToken => {
       accessTokenclearconnect_API = accessToken
-      console.log('ClearConnet AccessToken', accessToken);
+      console.log('ClearConnect AccessToken', accessToken);
       resolve(accessTokenclearconnect_API);
     }).catch(error => {
       console.error('The Promise was rejected with:', error);      
