@@ -90,9 +90,9 @@ const MessageGridItem: React.FC<MessageProps> = ({ auth0Status }) => {
   }
   return (<></>)
 }
-export const WelcomeGrid: React.FC = () => {
+export const MessageGridWrappedWithState: React.FC = () => {
   const tokenStatus = useAppSelector(state => state.tokens.status)
-  const userIdFromAuth0Metadata: number | undefined = useAppSelector(state => state.tokens.auth0UserMetaData === undefined ? undefined : +state.tokens.auth0UserMetaData)
+  //const userIdFromAuth0Metadata: number | undefined = useAppSelector(state => state.tokens.auth0UserMetaData === undefined ? undefined : +state.tokens.auth0UserMetaData)
   return (
     <Grid container style={{ height: '100vh', width: '100vw' }}>
       <Grid item xs={12} style={{ height: '100vh', width: '100vw' }}>

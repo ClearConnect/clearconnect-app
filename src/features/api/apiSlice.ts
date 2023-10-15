@@ -1,7 +1,7 @@
 // Import the RTK Query methods from the React-specific entry point
 import { createSlice } from '@reduxjs/toolkit';
-import { createApi, BaseQueryFn, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { useDispatch } from 'react-redux';
+import { createApi, /* BaseQueryFn, */ fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+//import { useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
 import { ReqData } from '../jobs/ReqInterfaces';
 
@@ -29,7 +29,7 @@ export const apiResourceSlice = createSlice({
 const baseQuery = fetchBaseQuery({
   baseUrl: 'https://localhost:7165',
   prepareHeaders: (headers, { getState }) => {
-    const rtst: RootState = getState() as RootState
+    //const rtst: RootState = getState() as RootState
     const token = (getState() as RootState).tokens.JWTs.clearConnect
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);

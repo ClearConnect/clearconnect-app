@@ -4,30 +4,28 @@ import React, { useEffect, useState } from 'react';
 //import { RootState } from './app/store'
 import { useAppSelector, useAppDispatch } from './app/hooks'
 //import { selectStatus } from './features/auth/AccessTokenSlice';
-import { getAuth0APIAccessToken } from './features/auth/AccessTokenSlice'
-import {  IdProp } from './features/api/apiSlice'
+import { getJwtTokens_Auth0AndClearConnect } from './features/auth/AccessTokenSlice'
+import { IdProp } from './features/api/apiSlice'
 import { useAuth0 } from "@auth0/auth0-react";
 
 import ReqCardGrid from './features/jobs/ReqCardGrid';
-import { WelcomeGrid, MessageOnEmptyScreen } from "./theme/Theme"
+import { MessageGridWrappedWithState, MessageOnEmptyScreen } from "./theme/Theme"
 import NavDrawer from './features/Nav/NavDrawer';
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import { Avatar } from '@mui/material';
 
 import { NewJobForContact } from './features/jobs/PasteJobDesc';
 
-import * as ReactDOM from "react-dom/client";
+//import * as ReactDOM from "react-dom/client";
 import {
   BrowserRouter,
-  Link,
   Route,
   Routes,
-  createBrowserRouter,
-  RouterProvider,
-  useParams 
+  useParams
 } from "react-router-dom";
 
 import ContactCardGrid from './features/contacts/ContactCardGrid'
 import MediaControlCard from './features/contacts/ContactMedia';
+import { AuthPopUp } from './features/auth/AuthPopUp';
 
 
 interface AppProps { }
@@ -46,13 +44,15 @@ const App: React.FC<AppProps> = () => {
   const dispatch = useAppDispatch()
   const tokenStatus = useAppSelector(state => state.tokens.status)
   const tokenError = useAppSelector(state => state.tokens.error)
+
   const userIdFromAuth0Metadata: number = useAppSelector(state => {
     if (state.tokens.auth0UserMetaData === undefined)
       return 0
-    const { cnt_contact_id } = state.tokens.auth0UserMetaData
+    //const { cnt_contact_id } = state.tokens.auth0UserMetaData
     return state.tokens.auth0UserMetaData.cnt_contact_id
   })
-  const kukuk = userIdFromAuth0Metadata
+
+
   function handleAvatarClick(): void {
     setDrawerState({ ...drawerState, isOpen: true })
   }
@@ -67,29 +67,32 @@ const App: React.FC<AppProps> = () => {
 
   useEffect(() => {
     if (tokenStatus === 'idle' && authObject.isAuthenticated) {
-      dispatch(getAuth0APIAccessToken(authObject))
+      dispatch(getJwtTokens_Auth0AndClearConnect(authObject))
     }
   }, [tokenStatus, authObject, dispatch])
 
-  const newJobOptionSelected: boolean = false//drawerState.optionSelected == 'Item 1'
-// cntId={userIdFromAuth0Metadata} />} />
+  //const newJobOptionSelected: boolean = false//drawerState.optionSelected == 'Item 1'
+  // cntId={userIdFromAuth0Metadata} />} />
   return (
     <BrowserRouter>
       <>
         <Routes>
           <Route path="/"
             element=
-            {(
+            {
               <div>
-                {(tokenStatus === 'failed') ? <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reporeted this error: " + tokenError} /> :
-                  (tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) ? <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" /> :
-                    (!isAuthenticated || tokenStatus !== 'succeeded') ? <WelcomeGrid /> : <ReqCardGrid Id={userIdFromAuth0Metadata} />
-                }
+                {(isLoading || tokenStatus === 'loading') && <MessageGridWrappedWithState />}
+                {!isAuthenticated && <MessageGridWrappedWithState />}
+                {(tokenStatus === 'failed') && <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reported: " + tokenError} />}
+                {(tokenStatus === 'consent_required') && <AuthPopUp authObject = {authObject } show={true} children={[]}/>}
+                {(tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) && <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" />}
+                {(tokenStatus === 'succeeded' && isAuthenticated) && <ReqCardGrid Id={userIdFromAuth0Metadata} />}
               </div>
-            )} />
-            <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact} />} />
-            <Route path="/JobContacts/:Id" element={< UserPageWrapper component={ContactCardGrid}   />} />
-            <Route path="/me" element={< UserPageWrapper component={MediaControlCard}   />} />
+
+            } />
+          <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact} />} />
+          <Route path="/JobContacts/:Id" element={< UserPageWrapper component={ContactCardGrid} />} />
+          <Route path="/me" element={< UserPageWrapper component={MediaControlCard} />} />
         </Routes>
         <div><Avatar sx={{
           position: 'absolute',
