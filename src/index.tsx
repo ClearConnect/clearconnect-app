@@ -20,17 +20,19 @@ root.render(
   <React.StrictMode>
     <ToggleColorMode child={
       <Provider store={store}>
+        
         <Auth0Provider
           domain="dev-1tkiivqacmubkas5.us.auth0.com"
           clientId="gZxAQIU9dXOMozZwikrSHAw7LAivYq34"
+          
           authorizationParams={{
             useRefreshTokens: false,
             redirect_uri: window.location.origin,
             //audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
             //scope: "read:current_user read:users read:users_app_metadata",
             audience: "https://clearconnect_API",
-            scope: "ReqAccess EventAccess",
-            //prompt: "consent"
+            scope: "ReqAccess EventAccess",          
+            prompt: "consent"
           }}
         >
           <ToggleColorMode child={<App />} />
