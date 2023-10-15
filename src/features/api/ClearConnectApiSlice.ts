@@ -40,7 +40,7 @@ const baseQuery = fetchBaseQuery({
 
 
 // Define our single API slice object
-export const apiSlice = createApi({
+export const clearConnectApiSlice = createApi({
   // The cache reducer expects to be added at `state.api` (already default - this is optional)
   reducerPath: 'api',
   // All of our requests will have URLs starting with BASE_URL and have accept and authorizaion headers
@@ -77,7 +77,7 @@ export const apiSlice = createApi({
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery, useAddJobForContactMutation } = apiSlice
+export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery, useAddJobForContactMutation } = clearConnectApiSlice
 
 export interface IdProp {
   Id: number;

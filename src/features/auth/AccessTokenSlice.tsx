@@ -16,8 +16,8 @@ const authInitialState: authStateInterface = {
   status: 'idle',
   error: ''
 }
-
-export async function GetUserMetadata(authobject: Auth0ContextInterface, ): Promise<{ user_metadata: auth0UserMetaDataType, accessTokenAuth0: string }> {
+export interface Auth0TokenAndMeta { user_metadata: auth0UserMetaDataType, accessTokenAuth0: string }
+export async function GetUserMetadata(authobject: Auth0ContextInterface, silent: boolean = true): Promise<Auth0TokenAndMeta> {
   let accessTokenAuth0: string
   return new Promise((resolve, reject) => {
     const differentAudienceOptions = {
@@ -27,8 +27,9 @@ export async function GetUserMetadata(authobject: Auth0ContextInterface, ): Prom
         redirect_uri: window.location.origin
       }
     }
-     authobject.getAccessTokenWithPopup( differentAudienceOptions
-    //authobject.getAccessTokenSilently(differentAudienceOptions
+    const getAccessToken = silent ? authobject.getAccessTokenSilently : authobject.getAccessTokenWithPopup
+    //authobject.getAccessTokenWithPopup( differentAudienceOptions
+    getAccessToken(differentAudienceOptions
       /*  {
        authorizationParams: {
          audience: `https://${domain}/api/v2/`,
@@ -78,13 +79,13 @@ async function GetClearConnectToken(auth0object: Auth0ContextInterface): Promise
 }
 
 
-interface auth0PayloadInterface {
+interface Auth0PayloadInterface {
   auth0: string,
   clearConnect: string,
   auth0UserMetaData: auth0UserMetaDataType
 }
 //https://redux.js.org/tutorials/essentials/part-5-async-logic#sending-data-with-thunks
-export const getJwtTokens_Auth0AndClearConnect = createAsyncThunk<auth0PayloadInterface, Auth0ContextInterface>(
+export const getJwtTokens_Auth0AndClearConnect = createAsyncThunk<Auth0PayloadInterface, Auth0ContextInterface>(
   'auth/auth0apiaccesstoken',
   async (authobject, thunkApi) => {
     //const mystate = thunkApi.getState()
@@ -97,31 +98,44 @@ export const getJwtTokens_Auth0AndClearConnect = createAsyncThunk<auth0PayloadIn
     return { auth0: response1.accessTokenAuth0, clearConnect: clearConnectToken, auth0UserMetaData: response1.user_metadata }
   }
 )
+export const getUserMetadataWithPopup = createAsyncThunk<Auth0TokenAndMeta, Auth0ContextInterface>(
+  'auth/auth0tokenandmeta',
+  async (authobject, thunkApi) => {
+    const auth0TokenAndMeta: Auth0TokenAndMeta = await GetUserMetadata(authobject, false)
+    return auth0TokenAndMeta// { auth0: auth0TokenAndMeta.accessTokenAuth0,  auth0UserMetaData: response1.user_metadata }
+  }
+)
 const domain = "dev-1tkiivqacmubkas5.us.auth0.com";
 const accessTokenSlice = createSlice({
   name: 'accessToken',
   initialState: authInitialState,
   reducers: {},
   extraReducers(builder) {
-    builder.addCase(getJwtTokens_Auth0AndClearConnect.pending, (state, action) => {
-      state.status = 'loading'
-    })
+    builder//.addCase(getJwtTokens_Auth0AndClearConnect.pending, (state, action) => {
+      .addCase(getUserMetadataWithPopup.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        const auth0Payload1: Auth0TokenAndMeta = action.payload
+        state.auth0UserMetaData = auth0Payload1.user_metadata
+        state.JWTs = { ...state.JWTs, auth0: auth0Payload1.accessTokenAuth0 }
+      })
       .addCase(getJwtTokens_Auth0AndClearConnect.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        // Add any fetched posts to the array
-        const auth0Payload: auth0PayloadInterface = action.payload
+        const auth0Payload: Auth0PayloadInterface = action.payload
         state.auth0UserMetaData = auth0Payload.auth0UserMetaData
         state.JWTs = { auth0: auth0Payload.auth0, clearConnect: auth0Payload.clearConnect }
-
       })
-      .addCase(getJwtTokens_Auth0AndClearConnect.rejected, (state, action) => {
-        state.error = action.error.message
-        if (action.error.message?.toLowerCase().includes('consent')) {
-          state.status = 'consent_required'
-        } else
-          state.status = 'failed'
-
-      })
+      .addMatcher(
+        (action) => action.type.endsWith('/pending'),
+        (state) => { state.status = 'loading' }
+      ).addMatcher(
+        (action) => action.type.endsWith('/rejected'),
+        (state, action) => {
+          state.error = action.error.message
+          if (action.error.message?.toLowerCase().includes('consent')) {
+            state.status = 'consent_required'
+          } else
+            state.status = 'failed'
+        })
   }
 })
 

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from './app/hooks'
 //import { selectStatus } from './features/auth/AccessTokenSlice';
 import { getJwtTokens_Auth0AndClearConnect } from './features/auth/AccessTokenSlice'
-import { IdProp } from './features/api/apiSlice'
+import { IdProp } from './features/api/ClearConnectApiSlice'
 import { useAuth0 } from "@auth0/auth0-react";
 
 import ReqCardGrid from './features/jobs/ReqCardGrid';

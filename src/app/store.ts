@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import  tokenReducer  from '../features/auth/AccessTokenSlice'
-import { apiSlice } from '../features/api/apiSlice'
+import { clearConnectApiSlice } from '../features/api/ClearConnectApiSlice'
 // ...
 
  const store = configureStore({
@@ -9,10 +9,10 @@ import { apiSlice } from '../features/api/apiSlice'
     //comments: commentsReducer,
     //users: usersReducer
      tokens: tokenReducer,
-     [apiSlice.reducerPath]: apiSlice.reducer
+     [clearConnectApiSlice.reducerPath]: clearConnectApiSlice.reducer
   },
   middleware: getDefaultMiddleware =>
-  getDefaultMiddleware().concat(apiSlice.middleware)
+  getDefaultMiddleware().concat(clearConnectApiSlice.middleware)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

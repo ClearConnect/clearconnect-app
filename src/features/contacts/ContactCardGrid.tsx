@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import ContactCard from './ContactCard';
 import { ContactCardProps } from './ContactCard';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { useGetContactsForJobQuery, IdProp } from '../api/apiSlice'
+import { useGetContactsForJobQuery, IdProp } from '../api/ClearConnectApiSlice'
 import { ProgressBar } from '../../theme/Theme';
 import { ExpandableBox } from '../../app/transitions'
 

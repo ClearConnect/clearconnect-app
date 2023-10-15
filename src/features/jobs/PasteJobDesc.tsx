@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, FormGroup, FormControl, Grid, Card, CardContent, Typography } from '@mui/material';
-import { useAddJobForContactMutation, IdProp } from '../api/apiSlice'
+import { useAddJobForContactMutation, IdProp } from '../api/ClearConnectApiSlice'
 import { ReqData } from '../jobs/ReqInterfaces';
 
 interface FormValues {

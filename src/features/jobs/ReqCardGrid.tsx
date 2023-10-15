@@ -2,7 +2,7 @@ import React from 'react';
 import {  Box,  /* CardMedia, */ Grid, Typography } from '@mui/material';
 //import MyCardImage from '../../logo.svg';
 import ReqCard from './ReqCard';
-import { useGetJobsForContactQuery, IdProp } from '../api/apiSlice'
+import { useGetJobsForContactQuery, IdProp } from '../api/ClearConnectApiSlice'
 import { ProgressBar } from '../../theme/Theme';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { ExpandableBox } from '../../app/transitions';
