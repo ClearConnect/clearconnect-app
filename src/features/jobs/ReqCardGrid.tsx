@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Box,  /* CardMedia, */ Grid, Typography } from '@mui/material';
+import { Box,  /* CardMedia, */ Grid, Typography } from '@mui/material';
 //import MyCardImage from '../../logo.svg';
 import ReqCard from './ReqCard';
 import { useGetJobsForContactQuery, IdProp } from '../api/ClearConnectApiSlice'
@@ -12,7 +12,7 @@ import { ExpandableBox } from '../../app/transitions';
   //AvatarClickFunction: () => void;
 }  */
 
-const ReqCardGrid: React.FC<IdProp> = (cntId) => {
+export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
   const {
     data: Reqs,
     isLoading,
@@ -26,22 +26,19 @@ const ReqCardGrid: React.FC<IdProp> = (cntId) => {
   let gridItems = null
   if (isLoading) {
     boxContent = <ProgressBar message='Getting Jobs for you...' />
-  } else if (isSuccess) {
-    if (Reqs === null) {
-      return (<ExpandableBox />)
-    }
-    gridItems = Reqs.map(req => {
+  }
+  else if (isError) {
+    const MyFetchBaseQueryError = error as FetchBaseQueryError;
+    boxContent = <ProgressBar message={`Sorry, ${MyFetchBaseQueryError.status.toString()} has occured in ReqCardGrid.`} />
+    //boxContent = <>Sorry, an error occured: {MyFetchBaseQueryError.status} {MyFetchBaseQueryError.data}</>
+  }  else {
+    gridItems = Reqs?.map(req => {
       //const c = req['jrId']
       return (<Grid item key={req['jrId']} xs={12} sm={6} md={4} lg={3} xl={2}>
         <ReqCard ReqCardData={req} />
       </Grid>)
     })
-  } else if (isError) {
-    const MyFetchBaseQueryError = error as FetchBaseQueryError;
-    boxContent = <ProgressBar message={`Sorry, ${MyFetchBaseQueryError.status.toString()} has occured in ReqCardGrid.`} />
-    //boxContent = <>Sorry, an error occured: {MyFetchBaseQueryError.status} {MyFetchBaseQueryError.data}</>
   }
-
   return (
     (boxContent ? <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
       <Typography variant="h4" component="h1">
@@ -55,4 +52,3 @@ const ReqCardGrid: React.FC<IdProp> = (cntId) => {
   )
 }
 
-export default ReqCardGrid;

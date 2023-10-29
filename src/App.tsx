@@ -8,7 +8,7 @@ import { getJwtTokens_Auth0AndClearConnect } from './features/auth/AccessTokenSl
 import { IdProp } from './features/api/ClearConnectApiSlice'
 import { useAuth0 } from "@auth0/auth0-react";
 
-import ReqCardGrid from './features/jobs/ReqCardGrid';
+import { ReqCardGrid } from './features/jobs/ReqCardGrid';
 import { MessageGridWrappedWithState, MessageOnEmptyScreen } from "./theme/Theme"
 import NavDrawer from './features/Nav/NavDrawer';
 import { Avatar } from '@mui/material';
@@ -42,9 +42,9 @@ const App: React.FC<AppProps> = () => {
   const [drawerState, setDrawerState] = useState<MyComponentState>({ isOpen: false, optionSelected: '' });
   const authObject = useAuth0()
   const dispatch = useAppDispatch()
+
   const tokenStatus = useAppSelector(state => state.tokens.status)
   const tokenError = useAppSelector(state => state.tokens.error)
-
   const userIdFromAuth0Metadata: number = useAppSelector(state => {
     if (state.tokens.auth0UserMetaData === undefined)
       return 0
@@ -81,14 +81,13 @@ const App: React.FC<AppProps> = () => {
             element=
             {
               <div>
-                {(isLoading || tokenStatus === 'loading') && <MessageGridWrappedWithState />}
+                {(isLoading ) && <MessageGridWrappedWithState />}
                 {!isAuthenticated && <MessageGridWrappedWithState />}
                 {(tokenStatus === 'failed') && <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reported: " + tokenError} />}
                 {(tokenStatus === 'consent_required') && <AuthPopUp authObject = {authObject } show={true} children={[]}/>}
-                {(tokenStatus === 'succeeded' && userIdFromAuth0Metadata === 0) && <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" />}
-                {(tokenStatus === 'succeeded' && isAuthenticated) && <ReqCardGrid Id={userIdFromAuth0Metadata} />}
+                {(tokenStatus === 'succeeded' && ( userIdFromAuth0Metadata === undefined || userIdFromAuth0Metadata === 0)) && <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" />}
+                {(tokenStatus === 'succeeded' && isAuthenticated && userIdFromAuth0Metadata > 0) && <ReqCardGrid Id={userIdFromAuth0Metadata} />}
               </div>
-
             } />
           <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact} />} />
           <Route path="/JobContacts/:Id" element={< UserPageWrapper component={ContactCardGrid} />} />

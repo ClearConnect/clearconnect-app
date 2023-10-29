@@ -50,6 +50,7 @@ export async function GetUserMetadata(authobject: Auth0ContextInterface, silent:
       return metadataResponse.json()
     }).then(jsonObject => {
       const { user_metadata } = jsonObject
+
       resolve({ user_metadata: user_metadata, accessTokenAuth0: accessTokenAuth0 })
     }).catch(error => {
       console.error('The Promise was rejected with:', error);
@@ -124,18 +125,25 @@ const accessTokenSlice = createSlice({
         state.auth0UserMetaData = auth0Payload.auth0UserMetaData
         state.JWTs = { auth0: auth0Payload.auth0, clearConnect: auth0Payload.clearConnect }
       })
+      .addCase(getUserMetadataWithPopup.rejected, (state, action) => {
+        state.error = `${action.error.message} from getUserMetadataWithPopup`
+        state.status = 'failed'
+      })
+      .addCase(getJwtTokens_Auth0AndClearConnect.rejected, (state, action) => {
+        state.error = `${action.error.message} from getJwtTokens_Auth0AndClearConnect`
+        if (action.error.message?.toLowerCase().includes('consent')) {
+          state.status = 'consent_required'
+        } else
+          state.status = 'failed'
+      })
       .addMatcher(
-        (action) => action.type.endsWith('/pending'),
+        (action) => {
+          if (action.type.endsWith('auth0apiaccesstoken/pending'))
+            return true
+          return false
+        },
         (state) => { state.status = 'loading' }
-      ).addMatcher(
-        (action) => action.type.endsWith('/rejected'),
-        (state, action) => {
-          state.error = action.error.message
-          if (action.error.message?.toLowerCase().includes('consent')) {
-            state.status = 'consent_required'
-          } else
-            state.status = 'failed'
-        })
+      )
   }
 })
 
