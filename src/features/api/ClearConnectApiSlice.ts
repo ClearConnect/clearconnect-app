@@ -45,7 +45,7 @@ export const clearConnectApiSlice = createApi({
   reducerPath: 'api',
   // All of our requests will have URLs starting with BASE_URL and have accept and authorizaion headers
   baseQuery: baseQuery,
-  tagTypes: ['Reqs'],
+  tagTypes: ['Reqs4Contact'],
   // The "endpoints" represent operations and requests for this server
   endpoints: builder => ({
     getContactInfo: builder.query<any, number>({
@@ -55,7 +55,13 @@ export const clearConnectApiSlice = createApi({
       query: (contactId: number) => {
         return `/Req/GetContactReqs/${contactId}`
       },
-      providesTags: (result) => [...result ?? [].map(({ id }) => ({ type: 'Reqs' as const, id })), { type: 'Reqs', id: 'LIST' }],
+      providesTags: (result) => {      
+        if( result )
+        {
+          return  [ ...result.map(({ jrId }) => ({ type: 'Reqs4Contact' as const, id: jrId })), { type: 'Reqs4Contact', id: 'LIST'}]
+        }
+        return [{ type: 'Reqs4Contact' as const, id: 'LIST' }]
+      }
     }),
     getContactsForJob: builder.query<[any], number>({
       query: (jrId) => {
@@ -70,12 +76,19 @@ export const clearConnectApiSlice = createApi({
         method: 'POST',
         body: reqData,
       }),
+      invalidatesTags: [{ type: 'Reqs4Contact', id: 'LIST' }]
     }),
     DeleteReq: builder.mutation<void, number>({
       query: (id) => ({
         url: `/Req/${id}`,
         method: 'DELETE',
-      })
+      }),
+      invalidatesTags: (result, response, deletedId) => {
+        if (response?.status.toString().toLowerCase().includes('error'))
+          return []
+        else
+          return [ { type: 'Reqs4Contact', id: deletedId }]
+      }
     })
   })
 })
