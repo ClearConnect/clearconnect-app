@@ -2,7 +2,7 @@ import React from 'react';
 import { Box,  /* CardMedia, */ Grid, Typography } from '@mui/material';
 //import MyCardImage from '../../logo.svg';
 import ReqCard from './ReqCard';
-import { useGetJobsForContactQuery, IdProp } from '../api/ClearConnectApiSlice'
+import { useGetJobsForContactQuery, IdProp, useDeleteReqMutation } from '../api/ClearConnectApiSlice'
 import { ProgressBar } from '../../theme/Theme';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { ExpandableBox } from '../../app/transitions';
@@ -18,7 +18,8 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
     isLoading,
     isSuccess,
     isError,
-    error
+    error,
+    refetch
   } = useGetJobsForContactQuery(cntId.Id)
 
   //const Result =  useGetJobsForContactQuery(2037)
@@ -35,7 +36,7 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
     gridItems = Reqs?.map(req => {
       //const c = req['jrId']
       return (<Grid item key={req['jrId']} xs={12} sm={6} md={4} lg={3} xl={2}>
-        <ReqCard ReqCardData={req} />
+        <ReqCard ReqCardData={req}  />
       </Grid>)
     })
   }

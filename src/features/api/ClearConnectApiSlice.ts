@@ -45,25 +45,23 @@ export const clearConnectApiSlice = createApi({
   reducerPath: 'api',
   // All of our requests will have URLs starting with BASE_URL and have accept and authorizaion headers
   baseQuery: baseQuery,
+  tagTypes: ['Reqs'],
   // The "endpoints" represent operations and requests for this server
   endpoints: builder => ({
-    // The `getPosts` endpoint is a "query" operation that returns data
     getContactInfo: builder.query<any, number>({
-      // The URL for the request is '/fakeApi/posts'
-      query: (contactId: number) => `/Contacts/${contactId}`,     
+      query: (contactId: number) => `/Contacts/${contactId}`,
     }),
     getJobsForContact: builder.query<[any], number>({
-      // The URL for the request is '/fakeApi/posts'
       query: (contactId: number) => {
         return `/Req/GetContactReqs/${contactId}`
       },
+      providesTags: (result) => [...result ?? [].map(({ id }) => ({ type: 'Reqs' as const, id })), { type: 'Reqs', id: 'LIST' }],
     }),
     getContactsForJob: builder.query<[any], number>({
-      // The URL for the request is '/fakeApi/posts'
       query: (jrId) => {
         return `/Contact/GetReqContacts/${jrId}`
       },
-    
+
     }),
     AddJobForContact: builder.mutation<ReqData, { cntId: number, reqData: Pick<ReqData, 'JrPosDescription'> & Partial<ReqData> }>({
       //  AddJob: builder.mutation< ReqData, ReqData  >({
@@ -72,12 +70,19 @@ export const clearConnectApiSlice = createApi({
         method: 'POST',
         body: reqData,
       }),
+    }),
+    DeleteReq: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/Req/${id}`,
+        method: 'DELETE',
+      })
     })
   })
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery, useAddJobForContactMutation } = clearConnectApiSlice
+export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery,
+  useAddJobForContactMutation, useDeleteReqMutation } = clearConnectApiSlice
 
 export interface IdProp {
   Id: number;
