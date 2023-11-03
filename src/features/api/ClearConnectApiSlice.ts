@@ -55,10 +55,9 @@ export const clearConnectApiSlice = createApi({
       query: (contactId: number) => {
         return `/Req/GetContactReqs/${contactId}`
       },
-      providesTags: (result) => {      
-        if( result )
-        {
-          return  [ ...result.map(({ jrId }) => ({ type: 'Reqs4Contact' as const, id: jrId })), { type: 'Reqs4Contact', id: 'LIST'}]
+      providesTags: (result) => {
+        if (result) {
+          return [...result.map(({ jrId }) => ({ type: 'Reqs4Contact' as const, id: jrId })), { type: 'Reqs4Contact', id: 'LIST' }]
         }
         return [{ type: 'Reqs4Contact' as const, id: 'LIST' }]
       }
@@ -78,16 +77,16 @@ export const clearConnectApiSlice = createApi({
       }),
       invalidatesTags: [{ type: 'Reqs4Contact', id: 'LIST' }]
     }),
-    DeleteReq: builder.mutation<void, number>({
-      query: (id) => ({
-        url: `/Req/${id}`,
+    DeleteReq: builder.mutation<void, { cntId: number, jrId: number }>({
+      query: ({ cntId, jrId }) => ({
+        url: `/Req?cntId=${cntId}&jrId=${jrId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, response, deletedId) => {
-        if (response?.status.toString().toLowerCase().includes('error'))
-          return []
-        else
-          return [ { type: 'Reqs4Contact', id: deletedId }]
+      invalidatesTags: (result, response, deleted) => {
+        if (response == undefined)//delete ok          
+          return [{ type: 'Reqs4Contact', id: deleted.jrId }]
+        return []
+
       }
     })
   })

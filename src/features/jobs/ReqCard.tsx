@@ -1,3 +1,4 @@
+import { useAppSelector } from '../../app/hooks'
 import { Box, Button, Card, CardActions, CardContent, Tooltip, Typography } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
@@ -28,10 +29,16 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     navigate(`/JobContacts/${event.currentTarget.name}`); // Replace '/your-route' with the actual route you want to navigate to
   };
 
-  const [deleteReq, {isLoading: idDeleting}] = useDeleteReqMutation()
-const handleDelete: React.MouseEventHandler<HTMLButtonElement>= (e)=>{
-  deleteReq(ReqCardData.jrId)
-}
+  const [deleteReq, { isLoading: idDeleting }] = useDeleteReqMutation()
+  const userIdFromAuth0Metadata: number = useAppSelector(state => {
+    if (state.tokens.auth0UserMetaData === undefined)
+      return 0
+    //const { cnt_contact_id } = state.tokens.auth0UserMetaData
+    return state.tokens.auth0UserMetaData.cnt_contact_id
+  })
+  const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {   
+    deleteReq({ cntId: userIdFromAuth0Metadata, jrId: ReqCardData.jrId })
+  }
   //export default function ReqCard(ReqCardData: any) {
   const title: string = ReqCardData.jrPositionTitle
   const kuku = ReqCardData.jrId
@@ -51,9 +58,9 @@ const handleDelete: React.MouseEventHandler<HTMLButtonElement>= (e)=>{
         </Box>
       </CardContent>
       <CardActions>
-        <Box sx={{display: "flex",   width: "100%", justifyContent: "space-between"}}>
-          <Button sx={ { } } size="small" name={ReqCardData.jrId} onClick={handleButtonClick}>Contacts</Button>
-          <IconButton sx={ { }} aria-label="delete" onClick={handleDelete}>
+        <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
+          <Button sx={{}} size="small" disabled={idDeleting} name={ReqCardData.jrId} onClick={handleButtonClick}>Contacts</Button>
+          <IconButton sx={{}} aria-label="delete" disabled={idDeleting} onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Box>
