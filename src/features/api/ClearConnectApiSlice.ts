@@ -71,7 +71,7 @@ export const clearConnectApiSlice = createApi({
     AddJobForContact: builder.mutation<ReqData, { cntId: number, reqData: Pick<ReqData, 'JrPosDescription'> & Partial<ReqData> }>({
       //  AddJob: builder.mutation< ReqData, ReqData  >({
       query: ({ cntId, reqData }) => ({
-        url: `/Req/PostReq/${cntId}`,
+        url: `/Req/PostReq?cntId=${cntId}`,
         method: 'POST',
         body: reqData,
       }),
