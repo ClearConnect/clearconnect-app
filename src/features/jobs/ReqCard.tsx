@@ -84,14 +84,14 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     <Card sx={{ borderRadius: 5 }}>
       <CardContent>
         <FormControl sx={{ m: 1, width: "100%" }}>
-          <InputLabel id="job-status-label">Status</InputLabel>
+          <InputLabel id="job-status-label">My status</InputLabel>
           <Select
             labelId="demo-multiple-chip-label"
             id="demo-multiple-chip"
            
             value={personName}
             onChange={handleChange}
-            input={<OutlinedInput id="job-status" label="Job Status" />}
+            input={<OutlinedInput id="job-status" label="My status" />}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                 {selected.map((value) => (
