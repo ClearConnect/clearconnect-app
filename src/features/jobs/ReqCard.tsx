@@ -26,7 +26,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   const navigate = useNavigate();
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const kuku = `/JobContacts/${event.currentTarget.name}`
+    //const kuku = `/JobContacts/${event.currentTarget.name}`
     navigate(`/JobContacts/${event.currentTarget.name}`); // Replace '/your-route' with the actual route you want to navigate to
   };
 
@@ -42,7 +42,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   }
   //export default function ReqCard(ReqCardData: any) {
   const title: string = ReqCardData.jrPositionTitle
-  const kuku = ReqCardData.jrId
+  //const kuku = ReqCardData.jrId
   const jrPosDescription = ReqCardData.jrPosDescription
 
   //status
