@@ -6,10 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from "@auth0/auth0-react";
 import store from './app/store'
 import { Provider } from 'react-redux'
-
-import { darkTheme, lightTheme } from './theme/Theme';
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
 import { ToggleColorMode } from './app/ColorToggle';
 
 const root = ReactDOM.createRoot(

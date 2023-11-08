@@ -1,10 +1,11 @@
 import { useAppSelector } from '../../app/hooks'
-import { Box, Button, Card, CardActions, CardContent, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Theme, Tooltip, Typography, useTheme } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Theme, Tooltip, Typography, useTheme } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDeleteReqMutation } from "../api/ClearConnectApiSlice";
+import { useDeleteReqMutation, useGetLovQuery } from "../api/ClearConnectApiSlice";
 import React from 'react';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 export interface ReqCardData {
   //imageUrl: string;
   title: string;
@@ -24,7 +25,14 @@ export interface ReqCardProps {
 
 const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   const navigate = useNavigate();
-
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    //refetch
+  } = useGetLovQuery()
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     //const kuku = `/JobContacts/${event.currentTarget.name}`
     navigate(`/JobContacts/${event.currentTarget.name}`); // Replace '/your-route' with the actual route you want to navigate to
@@ -47,12 +55,12 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
 
   //status
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>([]);
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+  const [statuses, setStatuses] = React.useState<string[]>([]);
+  const handleChange: (event: SelectChangeEvent<typeof statuses>) => any = (event: SelectChangeEvent<typeof statuses>) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
+    setStatuses(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
@@ -67,47 +75,68 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
       },
     },
   };
-  const names = [
+  /* const names = [
     'Leo Kogan',
     'Eva Kogan',
     'Lucy Kogan'
-  ];
-  function getStyles(name: string, personName: readonly string[], theme: Theme) {
+  ]; */
+  function getStyles(name: string, names: readonly string[], theme: Theme) {
     return {
       fontWeight:
-        personName.indexOf(name) === -1
+        names.indexOf(name) === -1
           ? theme.typography.fontWeightRegular
           : theme.typography.fontWeightMedium,
     };
   }
+
+  const kuku: any[] = data?.consultantReqInterests
+  //let kuku =  kuk.map( (d)=> d)
   return (
     <Card sx={{ borderRadius: 5 }}>
       <CardContent>
+        {isError && (
+          <Alert severity="error">
+            <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle>
+          </Alert>
+        )}
+        {isLoading && (
+          <Alert severity="error">
+            <AlertTitle>loading</AlertTitle>
+          </Alert>
+        )}
+        {isSuccess && (
+          <Alert severity="error">
+            <AlertTitle>Success</AlertTitle>
+          </Alert>
+        )}
+        {data && (
+          <Alert severity="error">
+            <AlertTitle>loading</AlertTitle>
+          </Alert>
+        )}
         <FormControl sx={{ m: 1, width: "100%" }}>
           <InputLabel id="job-status-label">My status</InputLabel>
           <Select
             labelId="demo-multiple-chip-label"
             id="demo-multiple-chip"
-           
-            value={personName}
+
+            value={statuses}//{data.consultantReqInterests.map((cri: any) => cri.cnsintDescription)}
             onChange={handleChange}
             input={<OutlinedInput id="job-status" label="My status" />}
             renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} />
-                ))}
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>                
+                  <Chip label={selected} />                
               </Box>
             )}
             MenuProps={MenuProps}
           >
-            {names.map((name) => (
+            {kuku?.map((cri: any) => (
               <MenuItem
-                key={name}
-                value={name}
-                style={getStyles(name, personName, theme)}
+                key={cri.cnsintId}
+                value={cri.cnsintDescription}
+                style={getStyles(cri.desc, statuses, theme)}
               >
-                {name}
+                {cri.cnsintDescription}
               </MenuItem>
             ))}
           </Select>

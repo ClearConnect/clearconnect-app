@@ -48,6 +48,9 @@ export const clearConnectApiSlice = createApi({
   tagTypes: ['Reqs4Contact'],
   // The "endpoints" represent operations and requests for this server
   endpoints: builder => ({
+    getLov: builder.query<any, void>({
+      query: () => "/lov"
+    }),
     getContactInfo: builder.query<any, number>({
       query: (contactId: number) => `/Contacts/${contactId}`,
     }),
@@ -93,7 +96,7 @@ export const clearConnectApiSlice = createApi({
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery,
+export const { useGetLovQuery, useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery,
   useAddJobForContactMutation, useDeleteReqMutation } = clearConnectApiSlice
 
 export interface IdProp {
