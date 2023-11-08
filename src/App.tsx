@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from './app/hooks'
 //import { selectStatus } from './features/auth/AccessTokenSlice';
 import { getJwtTokens_Auth0AndClearConnect } from './features/auth/AccessTokenSlice'
-import { IdProp } from './features/api/ClearConnectApiSlice'
+import { IdProp, useGetLovQuery } from './features/api/ClearConnectApiSlice'
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { ReqCardGrid } from './features/jobs/ReqCardGrid';
@@ -70,7 +70,14 @@ const App: React.FC<AppProps> = () => {
       dispatch(getJwtTokens_Auth0AndClearConnect(authObject))
     }
   }, [tokenStatus, authObject, dispatch])
-
+  const {
+    data,
+    isLoading: isLoadingLov,
+    isSuccess: isSuccessLov,
+    isError,
+    error,
+    //refetch
+  } = useGetLovQuery()
   //const newJobOptionSelected: boolean = false//drawerState.optionSelected == 'Item 1'
   // cntId={userIdFromAuth0Metadata} />} />
   return (
@@ -81,7 +88,7 @@ const App: React.FC<AppProps> = () => {
             element=
             {
               <div>
-                {(isLoading ) && <MessageGridWrappedWithState />}
+                {(isLoading  ) && <MessageGridWrappedWithState />}
                 {!isAuthenticated && <MessageGridWrappedWithState />}
                 {(tokenStatus === 'failed') && <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reported: " + tokenError} />}
                 {(tokenStatus === 'consent_required') && <AuthPopUp authObject = {authObject } show={true} children={[]}/>}

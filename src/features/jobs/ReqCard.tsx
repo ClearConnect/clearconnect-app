@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useDeleteReqMutation, useGetLovQuery } from "../api/ClearConnectApiSlice";
 import React from 'react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect';
 export interface ReqCardData {
   //imageUrl: string;
   title: string;
@@ -55,7 +56,8 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
 
   //status
   const theme = useTheme();
-  const [statuses, setStatuses] = React.useState<string[]>([]);
+  const [statuses, setStatuses] = React.useState<string[]>([data?.consultantReqInterests?.find( (id:any)=>  ReqCardData.jrId )?.cnsintDescription])
+  
   const handleChange: (event: SelectChangeEvent<typeof statuses>) => any = (event: SelectChangeEvent<typeof statuses>) => {
     const {
       target: { value },
@@ -89,6 +91,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     };
   }
 
+  
   const kuku: any[] = data?.consultantReqInterests
   //let kuku =  kuk.map( (d)=> d)
   return (
@@ -98,31 +101,16 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
           <Alert severity="error">
             <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle>
           </Alert>
-        )}
-        {isLoading && (
-          <Alert severity="error">
-            <AlertTitle>loading</AlertTitle>
-          </Alert>
-        )}
-        {isSuccess && (
-          <Alert severity="error">
-            <AlertTitle>Success</AlertTitle>
-          </Alert>
-        )}
-        {data && (
-          <Alert severity="error">
-            <AlertTitle>loading</AlertTitle>
-          </Alert>
-        )}
-        <FormControl sx={{ m: 1, width: "100%" }}>
+        )}        
+        { isSuccess && (<FormControl sx={{ m: 1, width: "100%" }}>
           <InputLabel id="job-status-label">My status</InputLabel>
-          <Select
+          <Select autoWidth
             labelId="demo-multiple-chip-label"
             id="demo-multiple-chip"
 
             value={statuses}//{data.consultantReqInterests.map((cri: any) => cri.cnsintDescription)}
             onChange={handleChange}
-            input={<OutlinedInput id="job-status" label="My status" />}
+            input={<OutlinedInput sx={{height: "10%"}} id="job-status" label="My status" />}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>                
                   <Chip label={selected} />                
@@ -140,7 +128,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl>)}
 
         <Tooltip title={title} arrow>
           <Typography variant="h5" component="div" noWrap>
