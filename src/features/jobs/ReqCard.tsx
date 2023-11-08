@@ -54,9 +54,12 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   //const kuku = ReqCardData.jrId
   const jrPosDescription = ReqCardData.jrPosDescription
 
-  //status
+   //if( isSuccess){
+    const statusInit = data?.consultantReqInterests?.find( (jrcn:any)=> jrcn.cnsintId === ReqCardData?.jobReqConsultant?.jrcnStatus ).cnsintDescription
+    //const kuku = data?.consultantReqInterests?.find( (id:any)=>  ReqCardData.jrId )?.cnsintDescription    
+  //} 
   const theme = useTheme();
-  const [statuses, setStatuses] = React.useState<string[]>([data?.consultantReqInterests?.find( (id:any)=>  ReqCardData.jrId )?.cnsintDescription])
+  const [statuses, setStatuses] = React.useState<string[]>([statusInit])//data?.consultantReqInterests?.find( (id:any)=>  ReqCardData?.jobReqConsultant?.jrcnStatus )?.cnsintDescription])
   
   const handleChange: (event: SelectChangeEvent<typeof statuses>) => any = (event: SelectChangeEvent<typeof statuses>) => {
     const {
