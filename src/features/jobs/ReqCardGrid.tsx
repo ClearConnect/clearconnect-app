@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, FormControlLabel, FormGroup,  /* CardMedia, */ Grid, Switch, Typography } from '@mui/material';
+import { Box, FormControl, FormControlLabel, FormGroup,  /* CardMedia, */ Grid, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Switch, Theme, Typography, useTheme } from '@mui/material';
 //import MyCardImage from '../../logo.svg';
 import ReqCard from './ReqCard';
 import { useGetJobsForContactQuery, IdProp, useGetLovQuery } from '../api/ClearConnectApiSlice'
@@ -7,6 +7,7 @@ import { ProgressBar } from '../../theme/Theme';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import Chip from '@mui/material/Chip';
 import { Stack } from '@mui/system';
+import { JobStatusFilter } from './JobStatusFilter';
 //import { ExpandableBox } from '../../app/transitions';
 
 /*  export interface IdProp {
@@ -23,33 +24,7 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
     error,
     //refetch
   } = useGetJobsForContactQuery(cntId.Id)
-  const {
-    data: consultantReqInterests,
-    isLoading: isLoadingChip,
-    isSuccess: isSuccessChip,
-    isError: isErrorChip,
-    error: errorChip,
-    //refetch
-  } = useGetLovQuery()
-  const {
-    isLoading: isLoadingLov,
-    isSuccess: isSuccessLov,
-    isError: isErrorLov,
-    error: errorLov
-    //refetch
-  } = useGetLovQuery()
-  interface ChipData {
-    key: number;
-    label: string;
-  }
-  
-  const [chipData, setChipData] = React.useState<readonly ChipData[]>(
-    consultantReqInterests.map( (cri: any) => { return {key: cri.id, label: cri.cnsintDescription}})
-  );
-
-  const handleDelete = (chipToDelete: ChipData ) => () => {
-    setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
-  };
+  //const [statuses, setStatuses] = React.useState<string[]>(statusInit)//data?.consultantReqInterests?.find( (id:any)=>  ReqCardData?.jobReqConsultant?.jrcnStatus )?.cnsintDescription])
   //const Result =  useGetJobsForContactQuery(2037)
   let boxContent: React.ReactElement | null = null
   let gridItems = null
@@ -75,18 +50,11 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
       </Typography>
     </Box> :
       <>
-
-        <Stack direction={"row"} spacing={1}>
-           {chipData.map( (kuku: ChipData) => <Chip
-              //icon={icon}
-              label={kuku.label}
-              onDelete={ handleDelete(kuku)}
-            />)}
-          </Stack>
-
-        <Grid container spacing={2}>
+        <JobStatusFilter />
+        {isSuccess && <Grid container spacing={2}>
           {gridItems}
         </Grid>
+        }
       </>
     )
   )

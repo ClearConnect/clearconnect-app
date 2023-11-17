@@ -70,6 +70,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
       typeof value === 'string' ? value.split(',') : value,
     );
   };
+  
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -80,11 +81,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
       },
     },
   };
-  /* const names = [
-    'Leo Kogan',
-    'Eva Kogan',
-    'Lucy Kogan'
-  ]; */
+
   function getStyles(name: string, names: readonly string[], theme: Theme) {
     return {
       fontWeight:
@@ -95,7 +92,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   }
 
   
-  const kuku: any[] = data?.consultantReqInterests
+  const consultantReqInterests: any[] = data?.consultantReqInterests
   //let kuku =  kuk.map( (d)=> d)
   return (
     <Card sx={{ borderRadius: 5 }}>
@@ -121,7 +118,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
             )}
             MenuProps={MenuProps}
           >
-            {kuku?.map((cri: any) => (
+            {consultantReqInterests?.map((cri: any) => (
               <MenuItem
                 key={cri.cnsintId}
                 value={cri.cnsintDescription}
