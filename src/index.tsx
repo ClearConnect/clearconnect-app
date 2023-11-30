@@ -1,42 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-//import './index.css';
-import App from './App';
+import  { AppWithStoreAuth0Povider } from './App';
 import reportWebVitals from './reportWebVitals';
-import { Auth0Provider } from "@auth0/auth0-react";
-import store from './app/store'
-import { Provider } from 'react-redux'
-import { ToggleColorMode } from './app/ColorToggle';
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-
   <React.StrictMode>
-    <ToggleColorMode child={
-      <Provider store={store}>
-        
-        <Auth0Provider
-          domain="dev-1tkiivqacmubkas5.us.auth0.com"
-          clientId="gZxAQIU9dXOMozZwikrSHAw7LAivYq34"
-          
-          authorizationParams={{
-            useRefreshTokens: false,
-            redirect_uri: window.location.origin,
-            //audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
-            //scope: "read:current_user read:users read:users_app_metadata",
-            audience: "https://clearconnect_API",
-            scope: "ReqAccess EventAccess",          
-            prompt: "consent"
-          }}
-        >
-          <ToggleColorMode child={<App />} />
-
-        </Auth0Provider>
-      </Provider>
-    } />
-
+    <AppWithStoreAuth0Povider />
   </React.StrictMode>
 );
 

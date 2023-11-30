@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 //import { useSelector, TypedUseSelectorHook } from 'react-redux';
 //import { useDispatch } from 'react-redux'
 //import { RootState } from './app/store'
 import { useAppSelector, useAppDispatch } from './app/hooks'
 //import { selectStatus } from './features/auth/AccessTokenSlice';
 import { getJwtTokens_Auth0AndClearConnect } from './features/auth/AccessTokenSlice'
-import { IdProp, useGetLovQuery } from './features/api/ClearConnectApiSlice'
-import { useAuth0 } from "@auth0/auth0-react";
+import { IdProp } from './features/api/ClearConnectApiSlice'
+import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 
 import { ReqCardGrid } from './features/jobs/ReqCardGrid';
 import { MessageGridWrappedWithState, MessageOnEmptyScreen } from "./theme/Theme"
@@ -26,9 +26,71 @@ import {
 import ContactCardGrid from './features/contacts/ContactCardGrid'
 import MediaControlCard from './features/contacts/ContactMedia';
 import { AuthPopUp } from './features/auth/AuthPopUp';
+import { ToggleColorMode } from './app/ColorToggle';
+import { Provider } from 'react-redux';
+import store from './app/store';
+interface ErrorBoundaryProps {
+  children: ReactNode
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+  error: Error | undefined,
+  errorInfo: React.ErrorInfo | undefined
+}
+
+export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: any) {
+    super(props)
+    this.state = { hasError: true, error: undefined, errorInfo: undefined }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    //console.log(errorInfo)
+    this.state = { hasError: true, errorInfo: errorInfo, error: error }
+  }
+  //static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  //return { hasError: true, error: undefined, errorInfo: undefined }
+  //}
+
+  render(): React.ReactNode {
+    if (this.state.hasError) {
+      return (<div>Something Went Wrong {this.state.error?.message}  </div>)
+    }
+    return this.props.children
+  }
+}
 
 
 interface AppProps { }
+export const AppWithStoreAuth0Povider: React.FC = () => {
+  return (
+    <Provider store={store}>
+      <Auth0Provider
+        domain="dev-1tkiivqacmubkas5.us.auth0.com"
+        clientId="gZxAQIU9dXOMozZwikrSHAw7LAivYq34"
+        authorizationParams={{
+          useRefreshTokens: false,
+          redirect_uri: window.location.origin,
+          //audience: "https://dev-1tkiivqacmubkas5.us.auth0.com/api/v2/",
+          //scope: "read:current_user read:users read:users_app_metadata",
+          audience: "https://clearconnect_API",
+          scope: "ReqAccess EventAccess",
+          prompt: "consent"
+        }}
+      >
+        <ToggleColorMode children={<App />} />
+      </Auth0Provider>
+    </Provider>
+
+
+  )
+}
+
+
+
+
+
 
 interface MyComponentState {
   isOpen: boolean;
@@ -70,16 +132,6 @@ const App: React.FC<AppProps> = () => {
       dispatch(getJwtTokens_Auth0AndClearConnect(authObject))
     }
   }, [tokenStatus, authObject, dispatch])
-  const {
-    data,
-    isLoading: isLoadingLov,
-    isSuccess: isSuccessLov,
-    isError,
-    error,
-    //refetch
-  } = useGetLovQuery()
-  //const newJobOptionSelected: boolean = false//drawerState.optionSelected == 'Item 1'
-  // cntId={userIdFromAuth0Metadata} />} />
   return (
     <BrowserRouter>
       <>
@@ -88,11 +140,11 @@ const App: React.FC<AppProps> = () => {
             element=
             {
               <div>
-                {(isLoading  ) && <MessageGridWrappedWithState />}
+                {(isLoading) && <MessageGridWrappedWithState />}
                 {!isAuthenticated && <MessageGridWrappedWithState />}
                 {(tokenStatus === 'failed') && <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reported: " + tokenError} />}
-                {(tokenStatus === 'consent_required') && <AuthPopUp authObject = {authObject } show={true} children={[]}/>}
-                {(tokenStatus === 'succeeded' && ( userIdFromAuth0Metadata === undefined || userIdFromAuth0Metadata === 0)) && <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" />}
+                {(tokenStatus === 'consent_required') && <AuthPopUp authObject={authObject} show={true} children={[]} />}
+                {(tokenStatus === 'succeeded' && (userIdFromAuth0Metadata === undefined || userIdFromAuth0Metadata === 0)) && <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" />}
                 {(tokenStatus === 'succeeded' && isAuthenticated && userIdFromAuth0Metadata > 0) && <ReqCardGrid Id={userIdFromAuth0Metadata} />}
               </div>
             } />

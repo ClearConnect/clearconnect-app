@@ -1,41 +1,12 @@
 import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import ContactCard from './ContactCard';
-import { ContactCardProps } from './ContactCard';
+//import { ContactCardProps } from './ContactCard';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { useGetContactsForJobQuery, IdProp } from '../api/ClearConnectApiSlice'
 import { ProgressBar } from '../../theme/Theme';
 import { ExpandableBox } from '../../app/transitions'
 
-const contacts: ContactCardProps[] = [
-  {
-    name: 'John Doe',
-    title: 'Software Engineer',
-    email: 'johndoe@example.com',
-    phone: '+1 123-456-7890',
-    avatar: 'path/to/avatar1.jpg',
-    address: '123 Main St, City, State',
-    social: {
-      facebook: 'https://www.facebook.com/johndoe',
-      twitter: 'https://www.twitter.com/johndoe',
-      linkedin: 'https://www.linkedin.com/in/johndoe',
-    },
-  },
-  {
-    name: 'Jane Smith',
-    title: 'Product Manager',
-    email: 'janesmith@example.com',
-    phone: '+1 987-654-3210',
-    avatar: 'path/to/avatar2.jpg',
-    address: '456 Elm St, City, State',
-    social: {
-      facebook: 'https://www.facebook.com/janesmith',
-      twitter: 'https://www.twitter.com/janesmith',
-      linkedin: 'https://www.linkedin.com/in/janesmith',
-    },
-  },
-  // Add more contact objects as needed
-];
 
 /* export interface IdProp {
     Id: number;

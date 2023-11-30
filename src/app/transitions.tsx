@@ -1,5 +1,5 @@
 import React from 'react';
-import { Theme, useTheme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { FormControlLabel, Grow, Paper, Switch } from '@mui/material';
 
@@ -21,7 +21,7 @@ const icon = (
 
 
 export function ExpandableBox() {
-  const theme = useTheme();
+  //const theme = useTheme();
 
   return (
     <><FormControlLabel

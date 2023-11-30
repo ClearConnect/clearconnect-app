@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, FormGroup, FormControl, Grid, Card, CardContent, Typography } from '@mui/material';
+import { TextField, Button, Box, FormGroup, FormControl } from '@mui/material';
 import { useAddJobForContactMutation, IdProp } from '../api/ClearConnectApiSlice'
-import { ReqData } from '../jobs/ReqInterfaces';
+//import { ReqData } from '../jobs/ReqInterfaces';
 
 interface FormValues {
     id: number;
@@ -60,7 +60,7 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
             "jrPosDescription": jrPosDescription.trim() === '' ? `Text is required` : ''
         }); 
         setIsFormValid(isValid);
-      });
+      },[setIsFormValid, values, errors]);
 
     return (
         <form onSubmit={handleSubmit}>

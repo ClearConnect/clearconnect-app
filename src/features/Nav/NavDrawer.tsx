@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Avatar, Drawer, IconButton, List, ListItem, ListItemText, ListItemButton } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
+import React from "react";
+import {  Drawer,  List,  ListItemText, ListItemButton } from "@mui/material";
+//import DeleteIcon from '@mui/icons-material/Delete';
 import { LogoutButton, LoginButton } from "../../features/auth/login"
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from 'react-router-dom';
@@ -11,10 +11,10 @@ export interface MyContextInterface {
     setData: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const MyContext = React.createContext<MyContextInterface>({
-    data: "",
-    setData: () => { },
-});
+/* //const MyContext = React.createContext<MyContextInterface>({
+//    data: "",
+//    setData: () => { },
+// //}); */
 
 interface ItemHref {
     itemTitle: string;
@@ -32,7 +32,7 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ items, isOpen, onClose, onClick }
     const userIdFromAuth0Metadata: number = useAppSelector(state => {
         if (state.tokens.auth0UserMetaData === undefined)
           return 0
-        const { cnt_contact_id } = state.tokens.auth0UserMetaData
+        //const { cnt_contact_id } = state.tokens.auth0UserMetaData
         return state.tokens.auth0UserMetaData.cnt_contact_id
       })
     const navigate = useNavigate();
@@ -42,9 +42,9 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ items, isOpen, onClose, onClick }
         navigate(navigateRoute); // Replace '/your-route' with the actual route you want to navigate to
         onClose()
     };
-    const [selectedOption, setSelectedOption] = useState<string>('');
+    //const [selectedOption, setSelectedOption] = useState<string>('');
 
-    const { user, isAuthenticated, isLoading } = useAuth0();
+    const { /* user, */ isAuthenticated/* , isLoading */ } = useAuth0();
     return (
         <div>
             <Drawer anchor="left" open={isOpen} onClose={onClose} sx={{

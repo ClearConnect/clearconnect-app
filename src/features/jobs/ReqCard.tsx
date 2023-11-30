@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDeleteReqMutation, useGetLovQuery } from "../api/ClearConnectApiSlice";
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect';
+//import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect';
 export interface ReqCardData {
   //imageUrl: string;
   title: string;
@@ -18,22 +18,33 @@ export interface ReqCardData {
     skShortName: string,
   }]
 }
-
 export interface ReqCardProps {
   ReqCardData: any;
   //DeleteReq: () => void;
 }
+interface ConsultantInterestIdDesc { id: number, desc: string }
+const GetStatusIdDes: (statusRec: any) => ConsultantInterestIdDesc = (statusRec) => {
+  const ret: ConsultantInterestIdDesc = { id: statusRec?.cnsintId, desc: statusRec?.cnsintDescription }
+  return ret
+}
 
 const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
-  const navigate = useNavigate();
+  const theme = useTheme();
   const {
     data,
-    isLoading,
+    //isLoading,
     isSuccess,
     isError,
     error,
     //refetch
   } = useGetLovQuery()
+  const consultantReqInterests: any[] = data?.consultantReqInterests
+  const statusRectInit = data?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId ===  ReqCardData?.jobReqConsultant?.jrcnStatus)
+  const [status, setStatus] = React.useState<ConsultantInterestIdDesc | null>(statusRectInit?statusRectInit:null)
+  const statusRec: any = data?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId === status ? status : ReqCardData?.jobReqConsultant?.jrcnStatus)
+  // rec?.consultantReqInterests?.find( (jrcn:any)=> jrcn.cnsintId === status? status: ReqCardData?.jobReqConsultant?.jrcnStatus )
+  const navigate = useNavigate();
+
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     //const kuku = `/JobContacts/${event.currentTarget.name}`
     navigate(`/JobContacts/${event.currentTarget.name}`); // Replace '/your-route' with the actual route you want to navigate to
@@ -54,23 +65,14 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   //const kuku = ReqCardData.jrId
   const jrPosDescription = ReqCardData.jrPosDescription
 
-   //if( isSuccess){
-    const statusInit = data?.consultantReqInterests?.find( (jrcn:any)=> jrcn.cnsintId === ReqCardData?.jobReqConsultant?.jrcnStatus ).cnsintDescription
-    //const kuku = data?.consultantReqInterests?.find( (id:any)=>  ReqCardData.jrId )?.cnsintDescription    
-  //} 
-  const theme = useTheme();
-  const [statuses, setStatuses] = React.useState<string[]>([statusInit])//data?.consultantReqInterests?.find( (id:any)=>  ReqCardData?.jobReqConsultant?.jrcnStatus )?.cnsintDescription])
-  
-  const handleChange: (event: SelectChangeEvent<typeof statuses>) => any = (event: SelectChangeEvent<typeof statuses>) => {
+  const handleChange: (event: SelectChangeEvent<ConsultantInterestIdDesc>, child?: ReactNode) => any = (event: SelectChangeEvent<typeof status>) => {
     const {
       target: { value },
     } = event;
-    setStatuses(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    const newStatus = value as ConsultantInterestIdDesc
+    setStatus(newStatus);
   };
-  
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -91,8 +93,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     };
   }
 
-  
-  const consultantReqInterests: any[] = data?.consultantReqInterests
+
   //let kuku =  kuk.map( (d)=> d)
   return (
     <Card sx={{ borderRadius: 5 }}>
@@ -101,35 +102,33 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
           <Alert severity="error">
             <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle>
           </Alert>
-        )}        
-        { isSuccess && (<FormControl sx={{ m: 1, width: "100%" }}>
+        )}
+        {isSuccess && (<FormControl sx={{ m: 1, width: "100%" }}>
           <InputLabel id="job-status-label">My status</InputLabel>
           <Select autoWidth
             labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
-
-            value={statuses}//{data.consultantReqInterests.map((cri: any) => cri.cnsintDescription)}
+            id="Consultant-Interest"
+            value={status??GetStatusIdDes(statusRectInit)}
             onChange={handleChange}
-            input={<OutlinedInput sx={{height: "10%"}} id="job-status" label="My status" />}
+            input={<OutlinedInput sx={{ height: "10%" }} id="job-status" label="My status" />}
             renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>                
-                  <Chip label={selected} />                
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                <Chip label={selected.desc} />
               </Box>
             )}
             MenuProps={MenuProps}
           >
             {consultantReqInterests?.map((cri: any) => (
               <MenuItem
-                key={cri.cnsintId}
-                value={cri.cnsintDescription}
-                style={getStyles(cri.desc, statuses, theme)}
+                key={GetStatusIdDes(cri).id}
+                value={GetStatusIdDes(cri) as any}
+                style={getStyles(cri.desc, [GetStatusIdDes(cri).desc], theme)}
               >
-                {cri.cnsintDescription}
+                {GetStatusIdDes(cri).desc}
               </MenuItem>
             ))}
           </Select>
         </FormControl>)}
-
         <Tooltip title={title} arrow>
           <Typography variant="h5" component="div" noWrap>
             {title}

@@ -1,12 +1,10 @@
 import React from 'react';
-import { Box, FormControl, FormControlLabel, FormGroup,  /* CardMedia, */ Grid, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Switch, Theme, Typography, useTheme } from '@mui/material';
+import { Box,   /* CardMedia, */ Grid,  Typography } from '@mui/material';
 //import MyCardImage from '../../logo.svg';
 import ReqCard from './ReqCard';
-import { useGetJobsForContactQuery, IdProp, useGetLovQuery } from '../api/ClearConnectApiSlice'
+import { useGetJobsForContactQuery, IdProp } from '../api/ClearConnectApiSlice'
 import { ProgressBar } from '../../theme/Theme';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import Chip from '@mui/material/Chip';
-import { Stack } from '@mui/system';
 import { JobStatusFilter } from './JobStatusFilter';
 //import { ExpandableBox } from '../../app/transitions';
 

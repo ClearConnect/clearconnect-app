@@ -16,17 +16,19 @@ export const AuthPopUp: React.FC<{ authObject: Auth0ContextInterface, show: any,
         };
         const showHideClassName = show ? 'modal display-block' : 'modal display-none';
         const openChildWindow = () => {
-            const childWindow = window.open('', '_blank', 'height=400,width=400');
-            if (childWindow) {
-              childWindowRef.current = childWindow;
+            if (showModal) {
+                const childWindow = window.open('', '_blank', 'height=400,width=400');
+                if (childWindow) {
+                    childWindowRef.current = childWindow;
+                }
             }
-          };
-        
-          const closeChildWindow = () => {
+        };
+
+        const closeChildWindow = () => {
             if (childWindowRef.current) {
-              childWindowRef.current.close();
+                childWindowRef.current.close();
             }
-          };
+        };
         useEffect(() => {
             //const authWindow = window.open('', '_blank', 'width=500,height=600');
             openChildWindow()  //puts window into Ref
@@ -62,13 +64,12 @@ export const AuthPopUp: React.FC<{ authObject: Auth0ContextInterface, show: any,
                     reject(error + '(while getting Auth0 API JWT)');
                 });
             })
-            if (childWindowRef.current)
-            {
-                childWindowRef.current.addEventListener('blur', function(event) {
-                // Perform actions when the window loses focus
-                console.log('childWindowRef.current lost focus');
-                // Add your custom logic here
-              });
+            if (childWindowRef.current) {
+                childWindowRef.current.addEventListener('blur', function (event) {
+                    // Perform actions when the window loses focus
+                    console.log('childWindowRef.current lost focus');
+                    // Add your custom logic here
+                });
             }
             if (childWindowRef.current) {
                 window.addEventListener('beforeunload', closeChildWindow);
@@ -79,9 +80,9 @@ export const AuthPopUp: React.FC<{ authObject: Auth0ContextInterface, show: any,
         }, []);
         const handleKeepOnTop = () => {
             if (childWindowRef.current) {
-              childWindowRef.current.focus();
+                childWindowRef.current.focus();
             }
-          };
+        };
         return (<div className={showHideClassName}>
             <section className="modal-main">
                 {children}

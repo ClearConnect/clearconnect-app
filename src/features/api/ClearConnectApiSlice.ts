@@ -1,6 +1,6 @@
 // Import the RTK Query methods from the React-specific entry point
 import { createSlice } from '@reduxjs/toolkit';
-import { createApi, /* BaseQueryFn, */ fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, /* BaseQueryFn, */ fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 //import { useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
 import { ReqData } from '../jobs/ReqInterfaces';
@@ -102,3 +102,24 @@ export const { useGetLovQuery, useGetContactsForJobQuery, useGetJobsForContactQu
 export interface IdProp {
   Id: number;
 } 
+/**
+ * Type predicate to narrow an unknown error to `FetchBaseQueryError`
+ */
+export function isFetchBaseQueryError(
+  error: unknown
+): error is FetchBaseQueryError {
+  return typeof error === 'object' && error != null && 'status' in error
+}
+/**
+ * Type predicate to narrow an unknown error to an object with a string 'message' property
+ */
+export function isErrorWithMessage(
+  error: unknown
+): error is { message: string } {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    'message' in error &&
+    typeof (error as any).message === 'string'
+  )
+}
