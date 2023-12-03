@@ -128,9 +128,23 @@ const App: React.FC<AppProps> = () => {
   };
 
   useEffect(() => {
+   /*  const handleNavigateAway = (event: BeforeUnloadEvent) => {
+      console.log( 'BeforeUnloadEvent')
+      const message = 'Sure you want to leave?';
+      event.preventDefault();
+      event.returnValue = true
+    };
+    console.log('App addEventListener(beforeunload ')
+    window.addEventListener('beforeunload', handleNavigateAway, true);
+*/
     if (tokenStatus === 'idle' && authObject.isAuthenticated) {
       dispatch(getJwtTokens_Auth0AndClearConnect(authObject))
-    }
+    }   
+   
+    // Cleanup the event listener when the component unmounts
+    //return () => {
+    //  window.removeEventListener('beforeunload', handleNavigateAway);
+    //};
   }, [tokenStatus, authObject, dispatch])
   return (
     <BrowserRouter>

@@ -4,9 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDeleteReqMutation, useGetLovQuery } from "../api/ClearConnectApiSlice";
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 //import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect';
+import { } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
 export interface ReqCardData {
   //imageUrl: string;
   title: string;
@@ -27,7 +30,12 @@ const GetStatusIdDes: (statusRec: any) => ConsultantInterestIdDesc = (statusRec)
   const ret: ConsultantInterestIdDesc = { id: statusRec?.cnsintId, desc: statusRec?.cnsintDescription }
   return ret
 }
-
+const handleNavigateAway = (event: BeforeUnloadEvent) => {
+  console.log('Triggered BeforeUnloadEvent')
+  const message = 'Sure you want to leave?';
+  event.preventDefault()
+  event.returnValue = true
+};
 const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   const theme = useTheme();
   const {
@@ -39,8 +47,8 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     //refetch
   } = useGetLovQuery()
   const consultantReqInterests: any[] = data?.consultantReqInterests
-  const statusRectInit = data?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId ===  ReqCardData?.jobReqConsultant?.jrcnStatus)
-  const [status, setStatus] = React.useState<ConsultantInterestIdDesc | null>(statusRectInit?statusRectInit:null)
+  const statusRectInit = data?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId === ReqCardData?.jobReqConsultant?.jrcnStatus)
+  const [status, setStatus] = React.useState<ConsultantInterestIdDesc | null>(null)
   const statusRec: any = data?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId === status ? status : ReqCardData?.jobReqConsultant?.jrcnStatus)
   // rec?.consultantReqInterests?.find( (jrcn:any)=> jrcn.cnsintId === status? status: ReqCardData?.jobReqConsultant?.jrcnStatus )
   const navigate = useNavigate();
@@ -71,6 +79,15 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     } = event;
     const newStatus = value as ConsultantInterestIdDesc
     setStatus(newStatus);
+    if (statusRectInit?.cnsintId !== newStatus?.id){
+      window.addEventListener('beforeunload', handleNavigateAway);
+      console.log('Added BeforeUnloadEvent')
+    }
+    else{
+      window.removeEventListener('beforeunload', handleNavigateAway);
+      console.log('Removed BeforeUnloadEvent')
+    }
+
   };
 
   const ITEM_HEIGHT = 48;
@@ -94,6 +111,25 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   }
 
 
+  /*
+     // Block navigating elsewhere when data has been entered into the input
+     useEffect(() => {
+      const handleNavigateAway = (event: BeforeUnloadEvent) => {
+        console.log( 'BeforeUnloadEvent')
+        const message = 'Sure you want to leave?';
+        event.preventDefault();
+        event.returnValue = true
+      };
+      console.log('addEventListener(beforeunload ')
+      window.addEventListener('beforeunload', handleNavigateAway, true);
+  
+      // Cleanup the event listener when the component unmounts
+      return () => {
+        window.removeEventListener('beforeunload', handleNavigateAway);
+      };
+    }, [status !== null && statusRectInit?.id === status?.id ]);
+  */
+
   //let kuku =  kuk.map( (d)=> d)
   return (
     <Card sx={{ borderRadius: 5 }}>
@@ -108,7 +144,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
           <Select autoWidth
             labelId="demo-multiple-chip-label"
             id="Consultant-Interest"
-            value={status??GetStatusIdDes(statusRectInit)}
+            value={status ?? GetStatusIdDes(statusRectInit)}
             onChange={handleChange}
             input={<OutlinedInput sx={{ height: "10%" }} id="job-status" label="My status" />}
             renderValue={(selected) => (

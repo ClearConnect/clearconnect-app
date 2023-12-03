@@ -1,18 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
-import  tokenReducer  from '../features/auth/AccessTokenSlice'
+import tokenReducer from '../features/auth/AccessTokenSlice'
 import { clearConnectApiSlice } from '../features/api/ClearConnectApiSlice'
+import { formSlice } from './DataUpdateSlice'
 // ...
 
- const store = configureStore({
+const store = configureStore({
   reducer: {
     //posts: postsReducer,
     //comments: commentsReducer,
-    //users: usersReducer
-     tokens: tokenReducer,
-     [clearConnectApiSlice.reducerPath]: clearConnectApiSlice.reducer
+    form: formSlice.reducer,
+    tokens: tokenReducer,
+    [clearConnectApiSlice.reducerPath]: clearConnectApiSlice.reducer
   },
   middleware: getDefaultMiddleware =>
-  getDefaultMiddleware().concat(clearConnectApiSlice.middleware)
+    getDefaultMiddleware().concat(clearConnectApiSlice.middleware)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
@@ -21,3 +22,4 @@ export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
 export default store
+
