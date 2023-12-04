@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { createApi, /* BaseQueryFn, */ fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 //import { useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
-import { ReqData } from '../jobs/ReqInterfaces';
+import { JobReqConsultantDTO, ReqData } from '../jobs/ReqInterfaces';
 
 interface successState {
   noContent: boolean,
@@ -80,7 +80,7 @@ export const clearConnectApiSlice = createApi({
       }),
       invalidatesTags: [{ type: 'Reqs4Contact', id: 'LIST' }]
     }),
-    DeleteReq: builder.mutation<void, { cntId: number, jrId: number }>({
+    DeleteContactReq: builder.mutation<void, { cntId: number, jrId: number }>({
       query: ({ cntId, jrId }) => ({
         url: `/Req?cntId=${cntId}&jrId=${jrId}`,
         method: 'DELETE',
@@ -91,17 +91,33 @@ export const clearConnectApiSlice = createApi({
         return []
 
       }
+    }),
+    UpdateContactReq: builder.mutation<JobReqConsultantDTO, { cntId: number, jrId: number, jobReqConsultantDTO: Pick<JobReqConsultantDTO, 'JobReqConsultant'> & Partial<JobReqConsultantDTO> }>({
+      query: ({ cntId, jrId, jobReqConsultantDTO }) => ({
+        url: `/Req?cntId=${cntId}&jrId=${jrId}`,
+        method: 'PATCH',
+        body: jobReqConsultantDTO,
+      }),
+      invalidatesTags: (result, response, updated) => {
+        if (response == undefined)//delete ok     
+        {
+          if (result?.JobReqConsultant.jrcnStatus === 18)  //no go
+            return [{ type: 'Reqs4Contact', id: updated.jrId }]
+        }
+        return []
+
+      }
     })
   })
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
 export const { useGetLovQuery, useGetContactsForJobQuery, useGetJobsForContactQuery, useGetContactInfoQuery,
-  useAddJobForContactMutation, useDeleteReqMutation } = clearConnectApiSlice
+  useAddJobForContactMutation, useDeleteContactReqMutation, useUpdateContactReqMutation } = clearConnectApiSlice
 
 export interface IdProp {
   Id: number;
-} 
+}
 /**
  * Type predicate to narrow an unknown error to `FetchBaseQueryError`
  */

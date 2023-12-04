@@ -150,3 +150,9 @@ export interface ReqData {
     // virtual ICollection<Placement> Placements { get: } = new List<Placement>():
 
 }
+
+export interface JobReqConsultantDTO extends  ReqData
+{
+    JobReqConsultant: any
+    JobReq: any
+}

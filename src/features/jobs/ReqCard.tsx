@@ -1,14 +1,15 @@
 import { useAppSelector } from '../../app/hooks'
-import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Theme, Tooltip, Typography, useTheme } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, Chip, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Theme, Tooltip, Typography, useTheme } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDeleteReqMutation, useGetLovQuery } from "../api/ClearConnectApiSlice";
+import { useDeleteContactReqMutation, useGetLovQuery, useUpdateContactReqMutation } from "../api/ClearConnectApiSlice";
 import React, { ReactNode, useEffect } from 'react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 //import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect';
 import { } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { isJsxElement } from 'typescript';
 
 export interface ReqCardData {
   //imageUrl: string;
@@ -57,8 +58,8 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     //const kuku = `/JobContacts/${event.currentTarget.name}`
     navigate(`/JobContacts/${event.currentTarget.name}`); // Replace '/your-route' with the actual route you want to navigate to
   };
-
-  const [deleteReq, { isLoading: idDeleting }] = useDeleteReqMutation()
+  const [updateReq, { isLoading: isUpdating, isError: isUpdateError, isSuccess: isUpdateSuccess, error: errorUpdate }] = useUpdateContactReqMutation()
+  const [deleteReq, { isLoading: isDeleting, isError: isDeleteError, isSuccess: isDeleteSuccess, error: errorDelete }] = useDeleteContactReqMutation()
   const userIdFromAuth0Metadata: number = useAppSelector(state => {
     if (state.tokens.auth0UserMetaData === undefined)
       return 0
@@ -78,12 +79,14 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
       target: { value },
     } = event;
     const newStatus = value as ConsultantInterestIdDesc
+    updateReq({ cntId:userIdFromAuth0Metadata, jrId: ReqCardData.jrId, jobReqConsultantDTO: { JobReqConsultant: { jrcnStatus: newStatus.id } } })
     setStatus(newStatus);
-    if (statusRectInit?.cnsintId !== newStatus?.id){
+
+    if (statusRectInit?.cnsintId !== newStatus?.id) {
       window.addEventListener('beforeunload', handleNavigateAway);
       console.log('Added BeforeUnloadEvent')
     }
-    else{
+    else {
       window.removeEventListener('beforeunload', handleNavigateAway);
       console.log('Removed BeforeUnloadEvent')
     }
@@ -131,40 +134,47 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
   */
 
   //let kuku =  kuk.map( (d)=> d)
+  const updateInProgress: () => JSX.Element = () => <>{(isUpdating) && <CircularProgress sx={{
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+
+  }} color="inherit" />} </>
   return (
     <Card sx={{ borderRadius: 5 }}>
       <CardContent>
-        {isError && (
-          <Alert severity="error">
-            <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle>
-          </Alert>
-        )}
-        {isSuccess && (<FormControl sx={{ m: 1, width: "100%" }}>
-          <InputLabel id="job-status-label">My status</InputLabel>
-          <Select autoWidth
-            labelId="demo-multiple-chip-label"
-            id="Consultant-Interest"
-            value={status ?? GetStatusIdDes(statusRectInit)}
-            onChange={handleChange}
-            input={<OutlinedInput sx={{ height: "10%" }} id="job-status" label="My status" />}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                <Chip label={selected.desc} />
-              </Box>
-            )}
-            MenuProps={MenuProps}
-          >
-            {consultantReqInterests?.map((cri: any) => (
-              <MenuItem
-                key={GetStatusIdDes(cri).id}
-                value={GetStatusIdDes(cri) as any}
-                style={getStyles(cri.desc, [GetStatusIdDes(cri).desc], theme)}
-              >
-                {GetStatusIdDes(cri).desc}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>)}
+
+        {isError && (<Alert severity="error"> <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
+        {isUpdateError && (<Alert severity="error"> <AlertTitle>{(errorUpdate as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
+        {isDeleteError && (<Alert severity="error"> <AlertTitle>{(errorDelete as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
+        {isSuccess && (
+          <FormControl sx={{ m: 1, width: "100%" }}>
+            {updateInProgress()}
+            <InputLabel id="job-status-label">My status</InputLabel>
+            <Select autoWidth sx={{ width: '100%' }}
+              labelId="demo-multiple-chip-label"
+              id="Consultant-Interest"
+              value={status ?? GetStatusIdDes(statusRectInit)}
+              onChange={handleChange}
+              input={<OutlinedInput sx={{ height: "10%" }} id="job-status" label="My status" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  <Chip label={selected.desc} />
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {consultantReqInterests?.map((cri: any) => (
+                <MenuItem
+                  key={GetStatusIdDes(cri).id}
+                  value={GetStatusIdDes(cri) as any}
+                  style={getStyles(cri.desc, [GetStatusIdDes(cri).desc], theme)}
+                >
+                  {GetStatusIdDes(cri).desc}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>)}
         <Tooltip title={title} arrow>
           <Typography variant="h5" component="div" noWrap>
             {title}
@@ -178,8 +188,8 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
       </CardContent>
       <CardActions>
         <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-          <Button sx={{}} size="small" disabled={idDeleting} name={ReqCardData.jrId} onClick={handleButtonClick}>Contacts</Button>
-          <IconButton sx={{}} aria-label="delete" disabled={idDeleting} onClick={handleDelete}>
+          <Button sx={{}} size="small" disabled={isDeleting} name={ReqCardData.jrId} onClick={handleButtonClick}>Contacts</Button>
+          <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Box>
