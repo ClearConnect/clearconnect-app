@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { createApi, /* BaseQueryFn, */ fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 //import { useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
-import { JobReqConsultantDTO, ReqData } from '../jobs/ReqInterfaces';
+import { JobReqConsultantDTO, LovDTO, ReqData } from '../jobs/ReqInterfaces';
 
 interface successState {
   noContent: boolean,
@@ -48,13 +48,13 @@ export const clearConnectApiSlice = createApi({
   tagTypes: ['Reqs4Contact'],
   // The "endpoints" represent operations and requests for this server
   endpoints: builder => ({
-    getLov: builder.query<any, void>({
+    getLov: builder.query<LovDTO, void>({
       query: () => "/lov"
     }),
     getContactInfo: builder.query<any, number>({
       query: (contactId: number) => `/Contacts/${contactId}`,
     }),
-    getJobsForContact: builder.query<[any], number>({
+    getJobsForContact: builder.query<[JobReqConsultantDTO], number>({
       query: (contactId: number) => {
         return `/Req/GetContactReqs/${contactId}`
       },
@@ -71,7 +71,7 @@ export const clearConnectApiSlice = createApi({
       },
 
     }),
-    AddJobForContact: builder.mutation<ReqData, { cntId: number, reqData: Pick<ReqData, 'JrPosDescription'> & Partial<ReqData> }>({
+    AddJobForContact: builder.mutation<ReqData, { cntId: number, reqData: Pick<ReqData, 'jrPosDescription'> & Partial<ReqData> }>({
       //  AddJob: builder.mutation< ReqData, ReqData  >({
       query: ({ cntId, reqData }) => ({
         url: `/Req/PostReq?cntId=${cntId}`,
@@ -92,17 +92,17 @@ export const clearConnectApiSlice = createApi({
 
       }
     }),
-    UpdateContactReq: builder.mutation<JobReqConsultantDTO, { cntId: number, jrId: number, jobReqConsultantDTO: Pick<JobReqConsultantDTO, 'JobReqConsultant'> & Partial<JobReqConsultantDTO> }>({
-      query: ({ cntId, jrId, jobReqConsultantDTO }) => ({
-        url: `/Req?cntId=${cntId}&jrId=${jrId}`,
+    UpdateContactReq: builder.mutation<JobReqConsultantDTO, { cntId: number, jobReqConsultantDTO: Pick<JobReqConsultantDTO, 'consultantReqInterestDTO' | 'jrId'>  }>({
+      query: ({ cntId, jobReqConsultantDTO }) => ({
+        url: `/Req?cntId=${cntId}`,
         method: 'PATCH',
         body: jobReqConsultantDTO,
       }),
       invalidatesTags: (result, response, updated) => {
         if (response == undefined)//delete ok     
         {
-          if (result?.JobReqConsultant.jrcnStatus === 18)  //no go
-            return [{ type: 'Reqs4Contact', id: updated.jrId }]
+          if (result?.consultantReqInterestDTO.cnsintId === 18)  //no go
+            return [{ type: 'Reqs4Contact', id: updated.jobReqConsultantDTO.jrId }]
         }
         return []
 

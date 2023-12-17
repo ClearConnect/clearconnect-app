@@ -9,109 +9,109 @@ export interface SkillData {
 }
 
 export interface ReqData {
-    JrId: number
+    jrId: number
+    id: string
+    jrCompanyId: number
 
-    JrCompanyId: number
+    jrLocationId: number
 
-    JrLocationId: number
+    jrDateReceive: Date
 
-    JrDateReceive: Date
+    jrDateOpen: Date
 
-    JrDateOpen: Date
+    jrPosStatusId: number //1 hot
 
-    JrPosStatusId: number //1 hot
+    jrContractFlag: string // "C":
 
-    JrContractFlag: string // "C":
+    jrSalMin: number
 
-    JrSalMin: number
+    jrSalMax: number
 
-    JrSalMax: number
+    jrNumPos: number
 
-    JrNumPos: number
+    jrWorkScheduleType: number
 
-    JrWorkScheduleType: number
+    jrReqClientNum: string
 
-    JrReqClientNum: string
+    jrAdvertSubject: string
 
-    JrAdvertSubject: string
+    jrAdvertText: string
 
-    JrAdvertText: string
+    jrEntryDate: Date
 
-    JrEntryDate: Date
+    jrUpdateDate: Date
 
-    JrUpdateDate: Date
+    //     number jrUserId :
 
-    //     number JrUserId :
+    jrPositionTitle: string
 
-    JrPositionTitle: string
+    //   string jrPosDescriptionRtf :
 
-    //   string JrPosDescriptionRtf :
+    //     Date jrAdvertSentDate :
 
-    //     Date JrAdvertSentDate :
+    jrStatusConfirmDate: Date
 
-    JrStatusConfirmDate: Date
+    jrBeingWorked: string
 
-    JrBeingWorked: string
+    jrCategoryId: number
 
-    JrCategoryId: number
+    jr3dworkoutStartDate: Date
 
-    Jr3dworkoutStartDate: Date
+    jr3dworkoutEndDate: Date
 
-    Jr3dworkoutEndDate: Date
+    //   number jrNewsGroupTemplateId :
 
-    //   number JrNewsGroupTemplateId :
+    jrProjectName: string
 
-    JrProjectName: string
+    // string jrFileName :
 
-    // string JrFileName :
+    jrRecruiterAssignedStatusId: number
 
-    JrRecruiterAssignedStatusId: number
+    jrInstructionToRecrutier: string
 
-    JrInstructionToRecrutier: string
+    jrAdvertValidated: string
 
-    JrAdvertValidated: string
+    jrAdvertValidatedDate: Date
 
-    JrAdvertValidatedDate: Date
+    jrAdvertHtml: string
 
-    JrAdvertHtml: string
+    // string jrBatch :
 
-    // string JrBatch :
+    jrMassMailDate: Date
 
-    JrMassMailDate: Date
+    // Date jrCutOffDate :
 
-    // Date JrCutOffDate :
+    // string jrSearchText :
 
-    // string JrSearchText :
+    // number jrSubmissionOptionId :
 
-    // number JrSubmissionOptionId :
+    jrBillRate: number
 
-    JrBillRate: number
+    jrProjectDesc: string
 
-    JrProjectDesc: string
+    jrEnvironmentDesc: string
 
-    JrEnvironmentDesc: string
+    jrPosDescription: string
 
-    JrPosDescription: string
+    jrAdvertKeywords: string
 
-    JrAdvertKeywords: string
+    jrAdvertRate: string
 
-    JrAdvertRate: string
+    // Date jrPostOnDice :
 
-    // Date JrPostOnDice :
+    jrBuId: number
 
-    JrBuId: number
+    // string jrAdvertRtf :
 
-    // string JrAdvertRtf :
+    // string jrPostOnCbId : = null!:
 
-    // string JrPostOnCbId : = null!:
+    // Date jrPostOnCb :
 
-    // Date JrPostOnCb :
+    jrInstructionsToRecruiterHtml: string
 
-    JrInstructionsToRecruiterHtml: string
+    jrInstructionsToRecruiterHtmlStyle: string
 
-    JrInstructionsToRecruiterHtmlStyle: string
-
-    JrPosDescriptionHtml: string
+    jrPosDescriptionHtml: string
 
     // virtual ICollection<ConsultantJobHistory> ConsultantJobHistories { get: } = new List<ConsultantJobHistory>():
 
@@ -129,30 +129,39 @@ export interface ReqData {
 
     JobSkills: [SkillData]
 
-    // virtual Skill JrCategory :
+    // virtual Skill jrCategory :
 
-    // virtual Company JrCompany : = null!:
+    // virtual Company jrCompany : = null!:
 
-    // virtual JobLocation JrLocation :
+    // virtual JobLocation jrLocation :
 
-    // virtual Template JrNewsGroupTemplate :
+    // virtual Template jrNewsGroupTemplate :
 
-    // virtual PositionStatusType JrPosStatus : = null!:
+    // virtual PositionStatusType jrPosStatus : = null!:
 
-    // virtual CbJobId JrPostOnCbNavigation : = null!:
+    // virtual CbJobId jrPostOnCbNavigation : = null!:
 
-    // virtual PositionStatusType JrRecruiterAssignedStatus : = null!:
+    // virtual PositionStatusType jrRecruiterAssignedStatus : = null!:
 
-    // virtual ResumeSubmissionOption JrSubmissionOption : = null!:
+    // virtual ResumeSubmissionOption jrSubmissionOption : = null!:
 
-    // virtual WorkSchedulePayType JrWorkScheduleTypeNavigation :
+    // virtual WorkSchedulePayType jrWorkScheduleTypeNavigation :
 
     // virtual ICollection<Placement> Placements { get: } = new List<Placement>():
 
 }
+export interface  ConsultantReqInterestDTO
+{
+    cnsintId: number 
+    cnsintDescription: string 
+    cnsintOrder: number
+}
+export interface LovDTO{
+  consultantReqInterests:  ConsultantReqInterestDTO[]
+}
 
 export interface JobReqConsultantDTO extends  ReqData
 {
-    JobReqConsultant: any
-    JobReq: any
+    consultantReqInterestDTO: ConsultantReqInterestDTO// Partial<ConsultantReqInterestDTO> & Pick<ConsultantReqInterestDTO, 'cnsintId'>
+    //JobReq: any
 }

@@ -10,6 +10,8 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { isJsxElement } from 'typescript';
+import { ConsultantReqInterestDTO, JobReqConsultantDTO, LovDTO, ReqData } from './ReqInterfaces';
+import { jobStatuses } from './JobStatusFilter';
 
 export interface ReqCardData {
   //imageUrl: string;
@@ -23,34 +25,36 @@ export interface ReqCardData {
   }]
 }
 export interface ReqCardProps {
-  ReqCardData: any;
+  jobReqConsultantDTO: JobReqConsultantDTO;
   //DeleteReq: () => void;
 }
-interface ConsultantInterestIdDesc { id: number, desc: string }
-const GetStatusIdDes: (statusRec: any) => ConsultantInterestIdDesc = (statusRec) => {
-  const ret: ConsultantInterestIdDesc = { id: statusRec?.cnsintId, desc: statusRec?.cnsintDescription }
-  return ret
-}
+//interface ConsultantInterestIdDesc { id: number, desc: string }
+//const GetStatusIdDes: (statusRec: any) => ConsultantInterestIdDesc = (statusRec) => {
+//  const ret: ConsultantInterestIdDesc = { id: statusRec?.cnsintId, desc: statusRec?.cnsintDescription }
+//  return ret
+//}
 const handleNavigateAway = (event: BeforeUnloadEvent) => {
   console.log('Triggered BeforeUnloadEvent')
   const message = 'Sure you want to leave?';
   event.preventDefault()
   event.returnValue = true
 };
-const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
+const ReqCard: React.FC<ReqCardProps> = ({ jobReqConsultantDTO }) => {
   const theme = useTheme();
   const {
-    data,
+    data: dataLov,
     //isLoading,
-    isSuccess,
+    isSuccess: isSuccessLov,
     isError,
     error,
     //refetch
   } = useGetLovQuery()
-  const consultantReqInterests: any[] = data?.consultantReqInterests
-  const statusRectInit = data?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId === ReqCardData?.jobReqConsultant?.jrcnStatus)
-  const [status, setStatus] = React.useState<ConsultantInterestIdDesc | null>(null)
-  const statusRec: any = data?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId === status ? status : ReqCardData?.jobReqConsultant?.jrcnStatus)
+  //const consultantReqInterests: any[] = data?.consultantReqInterests
+  const statusRectInit :() => ConsultantReqInterestDTO = () => jobStatuses(dataLov as LovDTO).find((jrcn: any) => {
+   return jrcn.cnsintId === jobReqConsultantDTO.consultantReqInterestDTO?.cnsintId
+  }) as ConsultantReqInterestDTO
+  const [status, setStatus] = React.useState<ConsultantReqInterestDTO | null>(null)
+ //const statusRec: any = dataLov?.consultantReqInterests?.find((jrcn: any) => jrcn.cnsintId === status ? status : jrcnDTOProp.jobReqConsultant?.cnsintId)
   // rec?.consultantReqInterests?.find( (jrcn:any)=> jrcn.cnsintId === status? status: ReqCardData?.jobReqConsultant?.jrcnStatus )
   const navigate = useNavigate();
 
@@ -67,22 +71,26 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
     return state.tokens.auth0UserMetaData.cnt_contact_id
   })
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    deleteReq({ cntId: userIdFromAuth0Metadata, jrId: ReqCardData.jrId })
+    deleteReq({ cntId: userIdFromAuth0Metadata, jrId: jobReqConsultantDTO.jrId })
   }
   //export default function ReqCard(ReqCardData: any) {
-  const title: string = ReqCardData.jrPositionTitle
+  const title: string = jobReqConsultantDTO.jrPositionTitle
   //const kuku = ReqCardData.jrId
-  const jrPosDescription = ReqCardData.jrPosDescription
+  const jrPosDescription = jobReqConsultantDTO.jrPosDescription
 
-  const handleChange: (event: SelectChangeEvent<ConsultantInterestIdDesc>, child?: ReactNode) => any = (event: SelectChangeEvent<typeof status>) => {
+  const handleChange: (event: SelectChangeEvent<ConsultantReqInterestDTO>, child?: ReactNode) => any = (event: SelectChangeEvent<typeof status>) => {
     const {
       target: { value },
     } = event;
-    const newStatus = value as ConsultantInterestIdDesc
-    updateReq({ cntId:userIdFromAuth0Metadata, jrId: ReqCardData.jrId, jobReqConsultantDTO: { JobReqConsultant: { jrcnStatus: newStatus.id } } })
+    const newStatus = value as ConsultantReqInterestDTO
+    //const  jobReqConsultantDTOUpdated: Partial<ConsultantReqInterestDTO> | Pick<ConsultantReqInterestDTO, 'cnsintId'> = { ...jrcnDTO.jobReqConsultant }
+    const  jobReqConsultantDTOUpdated: JobReqConsultantDTO = { ...jobReqConsultantDTO }
+    jobReqConsultantDTOUpdated.consultantReqInterestDTO = {...newStatus} 
+    //jobReqConsultantDTOUpdated.jobReqConsultant.cnsintId = 23// = { JrcnStatus: newStatus.id }
+    updateReq(  { cntId:userIdFromAuth0Metadata, jobReqConsultantDTO: jobReqConsultantDTOUpdated/*{ jrId: 0, jobReqConsultant: null }*/} )//: { JobReqConsultant: { jrcnStatus: newStatus.id } } })
     setStatus(newStatus);
 
-    if (statusRectInit?.cnsintId !== newStatus?.id) {
+    if (statusRectInit().cnsintId !== newStatus?.cnsintId) {
       window.addEventListener('beforeunload', handleNavigateAway);
       console.log('Added BeforeUnloadEvent')
     }
@@ -147,30 +155,30 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
         {isError && (<Alert severity="error"> <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
         {isUpdateError && (<Alert severity="error"> <AlertTitle>{(errorUpdate as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
         {isDeleteError && (<Alert severity="error"> <AlertTitle>{(errorDelete as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
-        {isSuccess && (
+        {isSuccessLov && (
           <FormControl sx={{ m: 1, width: "100%" }}>
             {updateInProgress()}
             <InputLabel id="job-status-label">My status</InputLabel>
             <Select autoWidth sx={{ width: '100%' }}
               labelId="demo-multiple-chip-label"
               id="Consultant-Interest"
-              value={status ?? GetStatusIdDes(statusRectInit)}
+              value={ status ? status: statusRectInit()}
               onChange={handleChange}
               input={<OutlinedInput sx={{ height: "10%" }} id="job-status" label="My status" />}
               renderValue={(selected) => (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  <Chip label={selected.desc} />
+                  <Chip label={selected.cnsintDescription} />
                 </Box>
               )}
               MenuProps={MenuProps}
             >
-              {consultantReqInterests?.map((cri: any) => (
+              {jobStatuses( dataLov as LovDTO)?.map((cri) => (
                 <MenuItem
-                  key={GetStatusIdDes(cri).id}
-                  value={GetStatusIdDes(cri) as any}
-                  style={getStyles(cri.desc, [GetStatusIdDes(cri).desc], theme)}
+                  key={ cri.cnsintId}
+                  value={cri as any}
+                  style={getStyles(cri.cnsintDescription, [status?.cnsintDescription??""], theme)}
                 >
-                  {GetStatusIdDes(cri).desc}
+                  {cri.cnsintDescription}
                 </MenuItem>
               ))}
             </Select>
@@ -188,7 +196,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ ReqCardData }) => {
       </CardContent>
       <CardActions>
         <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-          <Button sx={{}} size="small" disabled={isDeleting} name={ReqCardData.jrId} onClick={handleButtonClick}>Contacts</Button>
+          <Button sx={{}} size="small" disabled={isDeleting} name={"kuku"} onClick={handleButtonClick}>Contacts</Button>
           <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>

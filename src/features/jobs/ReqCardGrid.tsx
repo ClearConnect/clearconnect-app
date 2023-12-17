@@ -37,7 +37,7 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
     gridItems = Reqs?.map(req => {
       //const c = req['jrId']
       return (<Grid item key={req['jrId']} xs={12} sm={6} md={4} lg={3} xl={2}>
-        <ReqCard ReqCardData={req} />
+        <ReqCard jobReqConsultantDTO={req} />
       </Grid>)
     })
   } else { boxContent = <div> ????????????????</div> }
