@@ -21,7 +21,7 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
     isError,
     error,
     //refetch
-  } = useGetJobsForContactQuery(cntId.Id)
+  } = useGetJobsForContactQuery(cntId.id)
   //const [statuses, setStatuses] = React.useState<string[]>(statusInit)//data?.consultantReqInterests?.find( (id:any)=>  ReqCardData?.jobReqConsultant?.jrcnStatus )?.cnsintDescription])
   //const Result =  useGetJobsForContactQuery(2037)
   let boxContent: React.ReactElement | null = null

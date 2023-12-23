@@ -16,7 +16,7 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
         id: 2037//contactId.cntId
     });
     const [errors, setErrors] = useState<FormValues>({
-        id: contactId.Id,
+        id: contactId.id,
         jrPositionTitle: '',
         jrPosDescription: '',
     });
@@ -40,7 +40,7 @@ export const NewJobForContact: React.FC<IdProp> = (contactId) => {
           if (canSave) {
              try {
                  //let  reqData:ReqData  = {}        
-                 await AddJob({cntId: contactId.Id, reqData: { jrPositionTitle: values.jrPositionTitle,  jrPosDescription: values.jrPosDescription, jrId: values.id }}).unwrap()
+                 await AddJob({cntId: contactId.id, reqData: { jrPositionTitle: values.jrPositionTitle,  jrPosDescription: values.jrPosDescription, jrId: values.id }}).unwrap()
              } catch (err) {
                  console.error('Failed to save the post: ', err)
              }

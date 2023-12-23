@@ -20,7 +20,7 @@ const ContactCardGrid: React.FC<IdProp> = ( Contact ) => {
     isSuccess,
     isError,
     error
-  } = useGetContactsForJobQuery(Contact.Id)
+  } = useGetContactsForJobQuery(Contact.id)
 
   let boxContent : React.ReactElement | null = null
   let gridItems = null

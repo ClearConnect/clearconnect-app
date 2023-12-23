@@ -116,7 +116,7 @@ export const { useGetLovQuery, useGetContactsForJobQuery, useGetJobsForContactQu
   useAddJobForContactMutation, useDeleteContactReqMutation, useUpdateContactReqMutation } = clearConnectApiSlice
 
 export interface IdProp {
-  Id: number;
+  id: number;
 }
 /**
  * Type predicate to narrow an unknown error to `FetchBaseQueryError`

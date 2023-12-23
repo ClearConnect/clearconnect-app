@@ -14,6 +14,7 @@ import NavDrawer from './features/Nav/NavDrawer';
 import { Avatar } from '@mui/material';
 
 import { NewJobForContact } from './features/jobs/PasteJobDesc';
+import { NewJobForContact1 } from './features/jobs/PastJobRHF';
 
 //import * as ReactDOM from "react-dom/client";
 import {
@@ -159,10 +160,10 @@ const App: React.FC<AppProps> = () => {
                 {(tokenStatus === 'failed') && <MessageOnEmptyScreen message={"Oops...  Authenticatioin provider reported: " + tokenError} />}
                 {(tokenStatus === 'consent_required') && <AuthPopUp authObject={authObject} show={true} children={[]} />}
                 {(tokenStatus === 'succeeded' && (userIdFromAuth0Metadata === undefined || userIdFromAuth0Metadata === 0)) && <MessageOnEmptyScreen message="Oops...  Looks like your Auth0 set up is missig metadata not been completed.  Please call 917.509.4725" />}
-                {(tokenStatus === 'succeeded' && isAuthenticated && userIdFromAuth0Metadata > 0) && <ReqCardGrid Id={userIdFromAuth0Metadata} />}
+                {(tokenStatus === 'succeeded' && isAuthenticated && userIdFromAuth0Metadata > 0) && <ReqCardGrid id={userIdFromAuth0Metadata} />}
               </div>
             } />
-          <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact} />} />
+          <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact1} />} />
           <Route path="/JobContacts/:Id" element={< UserPageWrapper component={ContactCardGrid} />} />
           <Route path="/me" element={< UserPageWrapper component={MediaControlCard} />} />
         </Routes>
@@ -190,7 +191,7 @@ const UserPageWrapper: React.FC<{
   //propName: string;
 }> = ({ component: Component }) => {
   const { Id } = useParams();
-  const dynamicProp = { Id: parseInt(Id as string) };
+  const dynamicProp = { id: parseInt(Id as string) };
   return <Component {...dynamicProp} />;
 };
 
