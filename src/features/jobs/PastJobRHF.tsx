@@ -52,7 +52,7 @@ export const NewJobForContact1: React.FC<IdProp> = ({ id: contactId }) => {
                 <FormControl sx={{ width: '90%', mt: 1 }}>
                     <FormGroup sx={{ gap: '10px' }}>
                         <Controller
-                            name={"Title"}
+                            name={"jrPositionTitle"}
                             control={control}
                             render={({ field, fieldState: { error }, formState, }) => (
                                 <TextField
@@ -72,7 +72,7 @@ export const NewJobForContact1: React.FC<IdProp> = ({ id: contactId }) => {
                             rules={{ required: "Title is required" }}
                         />
                         <Controller
-                            name={"Description"}
+                            name={"jrPosDescription"}
                             control={control}
                             render={({ field, fieldState: { error }, formState, }) => (
                                 <TextField

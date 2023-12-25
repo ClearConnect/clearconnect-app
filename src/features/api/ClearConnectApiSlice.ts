@@ -60,7 +60,7 @@ export const clearConnectApiSlice = createApi({
       },
       providesTags: (result) => {
         if (result) {
-          return [...result.map(({ jrId }) => ({ type: 'Reqs4Contact' as const, id: jrId })), { type: 'Reqs4Contact', id: 'LIST' }]
+          return [...result.map(({ id, jrId }) => ({ type: 'Reqs4Contact' as const, id: id?id:jrId })), { type: 'Reqs4Contact', id: 'LIST' }]
         }
         return [{ type: 'Reqs4Contact' as const, id: 'LIST' }]
       }
@@ -80,7 +80,7 @@ export const clearConnectApiSlice = createApi({
       }),
       invalidatesTags: [{ type: 'Reqs4Contact', id: 'LIST' }]
     }),
-    DeleteContactReq: builder.mutation<void, { cntId: number, jrId: number }>({
+    DeleteContactReq: builder.mutation<void, { cntId: number, jrId: string }>({
       query: ({ cntId, jrId }) => ({
         url: `/Req?cntId=${cntId}&jrId=${jrId}`,
         method: 'DELETE',

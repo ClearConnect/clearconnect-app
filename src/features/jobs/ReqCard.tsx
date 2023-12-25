@@ -71,7 +71,7 @@ const ReqCard: React.FC<ReqCardProps> = ({ jobReqConsultantDTO }) => {
     return state.tokens.auth0UserMetaData.cnt_contact_id
   })
   const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    deleteReq({ cntId: userIdFromAuth0Metadata, jrId: jobReqConsultantDTO.jrId })
+    deleteReq({ cntId: userIdFromAuth0Metadata, jrId: jobReqConsultantDTO.id? jobReqConsultantDTO.id:jobReqConsultantDTO.jrId.toString() })
   }
   //export default function ReqCard(ReqCardData: any) {
   const title: string = jobReqConsultantDTO.jrPositionTitle
