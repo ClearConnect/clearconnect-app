@@ -25,10 +25,13 @@ export const apiResourceSlice = createSlice({
   },
 });
 
-
+//const apiUrl = process.env.REACT_APP_API_BASE_URL || 'default-url';
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://localhost:7165',
+  baseUrl: process.env.REACT_APP_API_BASE_URL_overwrite || process.env.REACT_APP_API_BASE_URL,// || 'https://localhost:7165',// 'https://localhost:7165',
   prepareHeaders: (headers, { getState }) => {
+    console.log(process.env)
+    console.log(process.env.REACT_APP_API_BASE_URL_overwrite)
+    const vl =  process.env.REACT_APP_API_BASE_URL_overwrite || process.env.REACT_APP_API_BASE_URL
     //const rtst: RootState = getState() as RootState
     const token = (getState() as RootState).tokens.JWTs.clearConnect
     if (token) {
