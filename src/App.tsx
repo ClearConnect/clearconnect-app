@@ -13,8 +13,7 @@ import { MessageGridWrappedWithState, MessageOnEmptyScreen } from "./theme/Theme
 import NavDrawer from './features/Nav/NavDrawer';
 import { Avatar } from '@mui/material';
 
-import { NewJobForContact } from './features/jobs/PasteJobDesc';
-import { NewJobForContact1 } from './features/jobs/PastJobRHF';
+import { JobEdit } from './features/jobs/PastJobRHF';
 
 //import * as ReactDOM from "react-dom/client";
 import {
@@ -163,7 +162,7 @@ const App: React.FC<AppProps> = () => {
                 {(tokenStatus === 'succeeded' && isAuthenticated && userIdFromAuth0Metadata > 0) && <ReqCardGrid id={userIdFromAuth0Metadata} />}
               </div>
             } />
-          <Route path="/PasteJob/:Id" element={< UserPageWrapper component={NewJobForContact1} />} />
+          <Route path="/PasteJob/:Id" element={< UserPageWrapper component={JobEdit} />} />
           <Route path="/JobContacts/:Id" element={< UserPageWrapper component={ContactCardGrid} />} />
           <Route path="/me" element={< UserPageWrapper component={MediaControlCard} />} />
         </Routes>

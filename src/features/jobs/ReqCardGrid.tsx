@@ -22,7 +22,12 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
     error,
     //refetch
   } = useGetJobsForContactQuery(cntId.id)
-  //const [statuses, setStatuses] = React.useState<string[]>(statusInit)//data?.consultantReqInterests?.find( (id:any)=>  ReqCardData?.jobReqConsultant?.jrcnStatus )?.cnsintDescription])
+  const [zoom, setZoom] = React.useState<{ id: string, zoomInOut:number}>({id:"", zoomInOut:0})//data?.consultantReqInterests?.find( (id:any)=>  ReqCardData?.jobReqConsultant?.jrcnStatus )?.cnsintDescription])
+  const ZoomInOut: ( id: string, zoomBy: number) => void = (id, zoomBy) => {
+    //const  newZoom: number[] = zoom.map( z => z + zoomBy)
+    //setZoom( zoom.map( z => z + zoomBy))
+    setZoom( {id,  zoomInOut: zoomBy})
+  }
   //const Result =  useGetJobsForContactQuery(2037)
   let boxContent: React.ReactElement | null = null
   let gridItems = null
@@ -35,9 +40,10 @@ export const ReqCardGrid: React.FC<IdProp> = (cntId) => {
     //boxContent = <>Sorry, an error occured: {MyFetchBaseQueryError.status} {MyFetchBaseQueryError.data}</>
   } else if (isSuccess /* && isSuccessLov */) {
     gridItems = Reqs?.map(req => {
-      //const c = req['jrId']
-      return (<Grid item key={req['jrId']} xs={12} sm={6} md={4} lg={3} xl={2}>
-        <ReqCard jobReqConsultantDTO={req} />
+      const key:string = req.id? req.id:req['jrId'].toString()
+      const zoomedKey =  zoom.id === key
+      return (<Grid item key={key} xs={12} sm={zoomedKey?12:6} md={zoomedKey?12:4} lg={zoomedKey?12:3} xl={zoomedKey?12:2}>
+        <ReqCard zoomedIn={zoomedKey} zoom={ZoomInOut} jobReqConsultantDTO={req} />
       </Grid>)
     })
   } else { boxContent = <div> ????????????????</div> }

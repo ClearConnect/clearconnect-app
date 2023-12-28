@@ -94,7 +94,7 @@ export const clearConnectApiSlice = createApi({
 
       }
     }),
-    UpdateContactReq: builder.mutation<JobReqConsultantDTO, { cntId: number, jobReqConsultantDTO: Pick<JobReqConsultantDTO, 'consultantReqInterestDTO' | 'jrId'> }>({
+    UpdateContactReq: builder.mutation<JobReqConsultantDTO, { cntId: number, jobReqConsultantDTO: Partial<JobReqConsultantDTO> & Pick<JobReqConsultantDTO, 'jrId'> }>({
       query: ({ cntId, jobReqConsultantDTO }) => ({
         url: `/Req?cntId=${cntId}`,
         method: 'PATCH',
