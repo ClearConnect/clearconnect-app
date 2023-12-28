@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { createApi, /* BaseQueryFn, */ fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 //import { useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
-import { JobReqConsultantDTO, LovDTO, ReqData } from '../jobs/ReqInterfaces';
+import { JobReqConsultantDTO, JobReqConsultantDTOUpdate, LovDTO, ReqData } from '../jobs/ReqInterfaces';
 
 interface successState {
   noContent: boolean,
@@ -94,7 +94,7 @@ export const clearConnectApiSlice = createApi({
 
       }
     }),
-    UpdateContactReq: builder.mutation<JobReqConsultantDTO, { cntId: number, jobReqConsultantDTO: Partial<JobReqConsultantDTO> & Pick<JobReqConsultantDTO, 'jrId'> }>({
+    UpdateContactReq: builder.mutation<JobReqConsultantDTO, { cntId: number, jobReqConsultantDTO: JobReqConsultantDTOUpdate }>({
       query: ({ cntId, jobReqConsultantDTO }) => ({
         url: `/Req?cntId=${cntId}`,
         method: 'PATCH',

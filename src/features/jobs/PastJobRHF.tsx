@@ -58,30 +58,10 @@ export const JobEditRHFControllers: React.FC<{fvDefualts: FormValues, useFormRet
         defaultValue={fvDefualts.jrPosDescription}
         rules={{ required: "Description is required", minLength: { value: 3, message: "Min of 3 char required" } }}
     />
+     {/* Display form-level error message */}
+     {errors.submit && <p>{errors.submit.message}</p>}
     </>)
 }
-
-const onSubmitForm: (  values:FormValues,  useFormRet: UseFormReturn<FormValues, any, undefined>) => void = async (values, useFormRet) => {
-    const { register, handleSubmit, reset, control, setValue, setError, formState: { errors, isValid, isLoading, isSubmitSuccessful, isDirty, isSubmitting, isValidating }, trigger } =  useFormRet
-    console.log(`Title: ${values.jrPositionTitle}, Description: ${values.jrPosDescription}`);
-    //const canSave = [values.jrPosDescription, values.jrPositionTitle, values.id].every(Boolean) && !isLoading
-    //if (canSave) {
-    try {
-        //let  reqData:ReqData  = {}        
-        await saveCallBack()//AddJob({ cntId: contactId, reqData: { jrPositionTitle: values.jrPositionTitle, jrPosDescription: values.jrPosDescription, jrId: values.id } }).unwrap()
-        reset(values);
-    } catch (err) {
-        console.error('Failed to save the post: ', err)
-        const MyFetchBaseQueryError = err as FetchBaseQueryError;
-        setError('submit', {
-            type: 'manual',
-            message: 'Submission failed. (' + MyFetchBaseQueryError.status + ') Please try again.',
-        });
-    }
-    //};
-
-}
-
 
 export const JobEdit: React.FC<IdProp> = ({ id: contactId }) => {
     const [AddJob, { isLoading: isLoadingAddJob, isError, error }] = useAddJobForContactMutation()
@@ -126,10 +106,7 @@ export const JobEdit: React.FC<IdProp> = ({ id: contactId }) => {
                         <JobEditRHFControllers fvDefualts={ defaultValues} useFormRet={useFormRet} />
                         <Button onClick={handleSubmit(onSubmit)} variant={"contained"} disabled={!isDirty || !isValid || isValidating || isSubmitting}>
                             Submit {errors.submit && errors.submit.message}
-                        </Button>
-                        <p>Is the form dirty? {isDirty ? 'Yes' : 'No'}</p>
-                        {/* Display form-level error message */}
-                        {errors.submit && <p>{errors.submit.message}</p>}
+                        </Button>                                           
                         <Button onClick={() => reset()} variant={"outlined"} disabled={isSubmitting}>
                             Reset
                         </Button>

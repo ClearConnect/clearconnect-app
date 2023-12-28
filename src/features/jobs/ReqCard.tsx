@@ -1,5 +1,5 @@
 import { useAppSelector } from '../../app/hooks'
-import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, Chip, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField, Theme, Tooltip, Typography, useTheme } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, Chip, CircularProgress, FormControl, FormGroup, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField, Theme, Tooltip, Typography, useTheme } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -15,10 +15,11 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { isJsxElement } from 'typescript';
-import { ConsultantReqInterestDTO, JobReqConsultantDTO, LovDTO, ReqData } from './ReqInterfaces';
+import { ConsultantReqInterestDTO, JobReqConsultantDTO, JobReqConsultantDTOUpdate, LovDTO, ReqData } from './ReqInterfaces';
 import { jobStatuses } from './JobStatusFilter';
 import ZoomIn from '@mui/icons-material/ZoomIn';
-import { JobEdit } from './PastJobRHF';
+import { Controller, FieldValues, SubmitHandler, useForm, UseFormReturn } from "react-hook-form"
+import { FormValues, JobEdit, JobEditRHFControllers } from './PastJobRHF';
 
 export interface ReqCardData {
   //imageUrl: string;
@@ -78,13 +79,12 @@ const ReqCard: React.FC<ReqCardProps> = ({ jobReqConsultantDTO, zoom, zoomedIn }
   const title: string = jobReqConsultantDTO.jrPositionTitle
   const jrPosDescription = jobReqConsultantDTO.jrPosDescription
 
-  const handleChange: (event: SelectChangeEvent<ConsultantReqInterestDTO>, child?: ReactNode) => any = (event: SelectChangeEvent<typeof status>) => {
+  const handleInterestChange: (event: SelectChangeEvent<ConsultantReqInterestDTO>, child?: ReactNode) => any = (event: SelectChangeEvent<typeof status>) => {
     const {
       target: { value },
     } = event;
     const newStatus = value as ConsultantReqInterestDTO
-    const jobReqConsultantDTOUpdated: JobReqConsultantDTO = { ...jobReqConsultantDTO }
-    jobReqConsultantDTOUpdated.consultantReqInterestDTO = { ...newStatus }
+    const jobReqConsultantDTOUpdated: JobReqConsultantDTOUpdate = { consultantReqInterestDTO: newStatus, id: jobReqConsultantDTO.id, jrId: jobReqConsultantDTO.jrId }
     updateReq({ cntId: userIdFromAuth0Metadata, jobReqConsultantDTO: jobReqConsultantDTOUpdated/*{ jrId: 0, jobReqConsultant: null }*/ })//: { JobReqConsultant: { jrcnStatus: newStatus.id } } })
     setStatus(newStatus);
 
@@ -97,29 +97,6 @@ const ReqCard: React.FC<ReqCardProps> = ({ jobReqConsultantDTO, zoom, zoomedIn }
       console.log('Removed BeforeUnloadEvent')
     }
   };
-
-  const handleEditSave: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, child?: ReactNode) => any = (event) => {
-    const {
-      target: { value },
-    } = event;
-    const newContent = value
-    const jobReqConsultantDTOUpdated = { jrPosDescription: value, id: jobReqConsultantDTO.id, jrId: jobReqConsultantDTO.jrId }
-    //jobReqConsultantDTOUpdated.consultantReqInterestDTO = null;
-    updateReq({ cntId: userIdFromAuth0Metadata, jobReqConsultantDTO: jobReqConsultantDTOUpdated/*{ jrId: 0, jobReqConsultant: null }*/ })//: { JobReqConsultant: { jrcnStatus: newStatus.id } } })
-    setIsEdit(false);
-    /*
-        if (statusRectInit().cnsintId !== newStatus?.cnsintId) {
-          window.addEventListener('beforeunload', handleNavigateAway);
-          console.log('Added BeforeUnloadEvent')
-        }
-        else {
-          window.removeEventListener('beforeunload', handleNavigateAway);
-          console.log('Removed BeforeUnloadEvent')
-        }
-    */
-  };
-
-
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -147,84 +124,122 @@ const ReqCard: React.FC<ReqCardProps> = ({ jobReqConsultantDTO, zoom, zoomedIn }
     left: '50%',
 
   }} color="inherit" />} </>
-  return (
-    <Card sx={{ borderRadius: 5 }}>
-      <CardContent>
-        {isError && (<Alert severity="error"> <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
-        {isUpdateError && (<Alert severity="error"> <AlertTitle>{(errorUpdate as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
-        {isDeleteError && (<Alert severity="error"> <AlertTitle>{(errorDelete as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
-        {isSuccessLov && (
-          <FormControl sx={{ m: 1, width: "100%" }}>
-            {updateInProgress()}
-            <InputLabel id="job-status-label">My status</InputLabel>
-            <Select autoWidth sx={{ width: '100%' }}
-              labelId="demo-multiple-chip-label"
-              id="Consultant-Interest"
-              value={status ? status : statusRectInit()}
-              onChange={handleChange}
-              input={<OutlinedInput sx={{ height: "10%" }} id="job-status" label="My status" />}
-              renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  <Chip label={selected.cnsintDescription} />
-                </Box>
-              )}
-              MenuProps={MenuProps}
-            >
-              {jobStatuses(dataLov as LovDTO)?.map((cri) => (
-                <MenuItem
-                  key={cri.cnsintId}
-                  value={cri as any}
-                  style={getStyles(cri.cnsintDescription, [status?.cnsintDescription ?? ""], theme)}
-                >
-                  {cri.cnsintDescription}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>)}
-        {!isEdit ?
-          <>
-            <Tooltip title={title} arrow>
-              <Typography variant="h5" component="div" noWrap>
-                {title}
-              </Typography>
-            </Tooltip>
-            <Box sx={{ height: 300, overflowY: 'auto' }}>
-              <Typography variant="body2">
-                {jrPosDescription}
-              </Typography>
-            </Box>
-          </> :
-         <JobEdit id={userIdFromAuth0Metadata} />
-        }
-      </CardContent>
-      <CardActions>
-        <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-          <Button sx={{}} size="small" disabled={isDeleting} name={"kuku"} onClick={handleButtonClick}>Contacts</Button>
-          <IconButton sx={{}} aria-label="delete" onClick={() => zoom(zoomedIn ? "" : idString, zoomedIn ? 0 : 12)} disabled={isDeleting} >
-            {zoomedIn ? <ZoomOutIcon /> : <ZoomInIcon />}
-          </IconButton>
-          {!isEdit ?
-            <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={() => setIsEdit(!isEdit)}>
-              <EditIcon color="primary" />
-            </IconButton> :
-            <>
-              <Box>
-                <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={() => setIsEdit(!isEdit)}>
-                  <SaveIcon color="primary" />
-                </IconButton>
-                <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={() => setIsEdit(!isEdit)}>
-                  <CancelIcon color="primary" />
-                </IconButton>
-              </Box>
-            </>
-          }
 
-          <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={handleDelete}>
-            <DeleteIcon color="primary" />
-          </IconButton>
-        </Box>
-      </CardActions>
-    </Card>
+  const useFormRet: UseFormReturn<FormValues, any, undefined> = useForm<FormValues>({ mode: "all" })
+  const { register, handleSubmit, reset, control, setValue, setError, formState: { dirtyFields, errors, isValid, isLoading, isSubmitSuccessful, isDirty, isSubmitting, isValidating }, trigger } = useFormRet
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+    console.log(`Title: ${values.jrPositionTitle}, Description: ${values.jrPosDescription}`);
+    //const canSave = [values.jrPosDescription, values.jrPositionTitle, values.id].every(Boolean) && !isLoading
+    //if (canSave) {
+    try {
+      //let  reqData:ReqData  = {}        
+      //await AddJob({ cntId: contactId, reqData: { jrPositionTitle: values.jrPositionTitle, jrPosDescription: values.jrPosDescription, jrId: values.id } }).unwrap()
+      var jobReqConsultantDTOUpdated: JobReqConsultantDTOUpdate = { id: jobReqConsultantDTO.id, jrId: jobReqConsultantDTO.jrId }
+      if (dirtyFields.jrPositionTitle)
+        jobReqConsultantDTOUpdated = { ...jobReqConsultantDTOUpdated, jrPositionTitle: values.jrPositionTitle }
+      if (dirtyFields.jrPosDescription)
+        jobReqConsultantDTOUpdated = { ...jobReqConsultantDTOUpdated, jrPosDescription: values.jrPosDescription }
+      await updateReq({ cntId: userIdFromAuth0Metadata, jobReqConsultantDTO: jobReqConsultantDTOUpdated/*{ jrId: 0, jobReqConsultant: null }*/ })//: { JobReqConsultant: { jrcnStatus: newStatus.id } } })
+      reset(values);
+    } catch (err) {
+      console.error('Failed to save the post: ', err)
+      const MyFetchBaseQueryError = err as FetchBaseQueryError;
+      setError('submit', {
+        type: 'manual',
+        message: 'Req Update failed. (' + MyFetchBaseQueryError.status + ') Please try again.',
+      });
+    }
+    //};
+
+  }
+
+
+  return (
+
+
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Card sx={{ borderRadius: 5 }}>
+        <CardContent>
+          {isError && (<Alert severity="error"> <AlertTitle>{(error as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
+          {isUpdateError && (<Alert severity="error"> <AlertTitle>{(errorUpdate as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
+          {isDeleteError && (<Alert severity="error"> <AlertTitle>{(errorDelete as FetchBaseQueryError).status.toString()}</AlertTitle></Alert>)}
+          {isSuccessLov && (
+            <FormControl sx={{ width: "100%" }}>
+              {updateInProgress()}
+              <InputLabel id="job-status-label">My status</InputLabel>
+              <Select autoWidth sx={{ width: '100%' }}
+                labelId="demo-multiple-chip-label"
+                id="Consultant-Interest"
+                value={status ? status : statusRectInit()}
+                onChange={handleInterestChange}
+                input={<OutlinedInput sx={{ height: "10%" }} id="job-status" label="My status" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    <Chip label={selected.cnsintDescription} />
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                {jobStatuses(dataLov as LovDTO)?.map((cri) => (
+                  <MenuItem
+                    key={cri.cnsintId}
+                    value={cri as any}
+                    style={getStyles(cri.cnsintDescription, [status?.cnsintDescription ?? ""], theme)}
+                  >
+                    {cri.cnsintDescription}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>)}
+          {!isEdit ?
+            <>
+              <Tooltip title={title} arrow>
+                <Typography variant="h5" component="div" noWrap>
+                  {title}
+                </Typography>
+              </Tooltip>
+              <Box sx={{ height: 300, overflowY: 'auto' }}>
+                <Typography variant="body2">
+                  {jrPosDescription}
+                </Typography>
+              </Box>
+            </> :
+            <FormControl sx={{ width: "100%", mt: 1 }}>
+              <FormGroup sx={{ gap: '5px' }}>
+                <JobEditRHFControllers useFormRet={useFormRet} fvDefualts={{ id: userIdFromAuth0Metadata, jrPosDescription: jrPosDescription, jrPositionTitle: title }} />
+              </FormGroup>
+            </FormControl>
+
+          }
+        </CardContent>
+        <CardActions>
+          <Box sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
+            <Button sx={{}} size="small" disabled={isDeleting} name={"kuku"} onClick={handleButtonClick}>Contacts</Button>
+            <IconButton sx={{}} aria-label="delete" onClick={() => zoom(zoomedIn ? "" : idString, zoomedIn ? 0 : 12)} disabled={isDeleting} >
+              {zoomedIn ? <ZoomOutIcon /> : <ZoomInIcon />}
+            </IconButton>
+            {!isEdit ?
+              <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={() => setIsEdit(!isEdit)}>
+                <EditIcon color="primary" />
+              </IconButton> :
+              <>
+                <Box>
+                  <IconButton sx={{}} aria-label="delete" disabled={isDeleting || !isDirty || !isValid || isValidating || isSubmitting} onClick={handleSubmit(onSubmit)} >
+                    <SaveIcon color="primary" />
+                  </IconButton>
+                  <IconButton sx={{}} aria-label="delete" disabled={isDeleting} onClick={() => setIsEdit(!isEdit)}>
+                    <CancelIcon color="primary" />
+                  </IconButton>
+                </Box>
+              </>
+            }
+            <IconButton sx={{}} aria-label="delete" disabled={isDeleting || isUpdating} onClick={handleDelete}>
+              <DeleteIcon color="primary" />
+            </IconButton>
+          </Box>
+        </CardActions>
+      </Card>
+    </form>
   );
 }
 export default ReqCard;

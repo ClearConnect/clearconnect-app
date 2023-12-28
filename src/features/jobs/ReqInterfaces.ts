@@ -165,3 +165,4 @@ export interface JobReqConsultantDTO extends  ReqData
     consultantReqInterestDTO: ConsultantReqInterestDTO// Partial<ConsultantReqInterestDTO> & Pick<ConsultantReqInterestDTO, 'cnsintId'>
     //JobReq: any
 }
+export type JobReqConsultantDTOUpdate = Partial<JobReqConsultantDTO> & (Pick<JobReqConsultantDTO, "jrId"> | Pick<JobReqConsultantDTO, "id">)
